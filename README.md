@@ -5,6 +5,7 @@ AtCoderでJavaを使用するための競技プログラミング専用開発環
 ## 🚀 クイックスタート
 
 ### 必要なもの
+
 - VSCode
 - Dev Containers拡張機能
 - Docker
@@ -12,20 +13,25 @@ AtCoderでJavaを使用するための競技プログラミング専用開発環
 ### セットアップ手順
 
 1. **プロジェクトを開く**
-   ```bash
-   code atcoder-java-template
-   ```
+
+```bash
+code atcoder-java-template
+```
 
 2. **Dev Containerで開く**
-   - `Ctrl+Shift+P` でコマンドパレットを開く
-   - `Dev Containers: Reopen in Container` を選択
-   - 初回は自動的にコンテナがビルドされます
+
+- `Ctrl+Shift+P` でコマンドパレットを開く
+- `Dev Containers: Reopen in Container` を選択
+- 初回は自動的にコンテナがビルドされます
 
 3. **AtCoderにログイン**
-   ```bash
-   # ここは飛ばしても過去問のダウンロードは可能です
-   acc login
-   ```
+
+```bash
+# ここを飛ばしても過去問のダウンロードは可能ですが、ログインしないとコンテストの参加ができません
+aclogin
+```
+
+AtCoderの`REVEL_SESSION` Cookieの取得方法は[このURL](https://github.com/key-moon/aclogin)を参照してください
 
 ## 📝 基本的な使い方
 
@@ -45,9 +51,11 @@ acc new abc380
 ### テスト実行
 
 **方法1: VSCodeタスク（推奨）**
+
 - `Ctrl+Shift+P` → `Tasks: Run Task` → `AtCoder: Test Current Problem`
 
 **方法2: コマンドライン**
+
 ```bash
 ./test abc380 a
 ```
@@ -55,9 +63,11 @@ acc new abc380
 ### 提出
 
 **方法1: VSCodeタスク（推奨）**
+
 - `Ctrl+Shift+P` → `Tasks: Run Task` → `AtCoder: Submit Current Problem`
 
 **方法2: コマンドライン**
+
 ```bash
 ./submit abc380 a
 ```
@@ -65,6 +75,7 @@ acc new abc380
 ## ⚡ VSCodeの便利機能
 
 ### タスク機能
+
 - `Ctrl+Shift+P` → `Tasks: Run Task` で以下が利用可能：
   - **AtCoder: Download Contest** - 問題のダウンロード
   - **AtCoder: Test Current Problem** - 現在の問題をテスト
@@ -72,11 +83,13 @@ acc new abc380
   - **AtCoder: Login** - AtCoderにログイン
 
 ### デバッグ機能
+
 - `F5` でデバッグ実行
 - ブレークポイントで変数値を確認
 - ステップ実行でロジックを追跡
 
 ### コード実行
+
 - `Ctrl+F5` でコードを直接実行（Code Runner）
 
 ## 🛠️ 手動でのコンテナ操作
@@ -112,6 +125,7 @@ atcoder-java/
 ## 🔧 環境詳細
 
 ### インストール済みツール
+
 - **Java**: OpenJDK 17
 - **Python**: 3.10（atcoder-cli, online-judge-tools用）
 - **Node.js**: 18.x（atcoder-cli用）
@@ -119,6 +133,7 @@ atcoder-java/
 - **online-judge-tools**: テスト実行
 
 ### VSCode拡張機能
+
 - Java Extension Pack
 - Java Language Support
 - Code Runner
@@ -141,19 +156,18 @@ public class Main {
 ## 🔍 トラブルシューティング
 
 ### Dockerビルドエラー
+
 ```bash
 # キャッシュをクリアしてリビルド
 docker-compose build --no-cache
 ```
 
 ### 権限エラー
+
 ```bash
 # テスト・提出スクリプトに実行権限を付与
 chmod +x test submit
 ```
-
-### atcoder-cliでログインできない
-- ブラウザでAtCoderにログイン後、再度 `acc login` を実行
 
 ## 📚 参考リンク
 

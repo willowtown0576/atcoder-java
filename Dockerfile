@@ -43,6 +43,9 @@ RUN npm install -g atcoder-cli
 # online-judge-toolsのインストール
 RUN pip3 install online-judge-tools
 
+# acloginのインストール
+RUN pip3 install aclogin
+
 # 必要なディレクトリを作成
 RUN mkdir -p /root/.config/atcoder-cli-nodejs
 
