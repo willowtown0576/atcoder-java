@@ -3,7 +3,6 @@
 .gitignore
 
 # IDE
-.vscode/build
 .idea
 *.swp
 *.swo

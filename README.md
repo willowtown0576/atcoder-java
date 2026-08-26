@@ -1,144 +1,139 @@
-# AtCoder Java 環境
+# AtCoder Java
 
-AtCoderでJavaを使用するための競技プログラミング専用開発環境です。VSCode Dev Containersを使用して簡単にセットアップできます。
+AtCoder に Java で参加するための、Docker ベースの開発環境です。エディタには Zed を使用し、コンパイル・サンプルテスト・提出はコンテナ内で実行します。
 
-## 🚀 クイックスタート
+## 必要なもの
 
-### 必要なもの
+- [Zed](https://zed.dev/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-- VSCode
-- Dev Containers拡張機能
-- Docker
+## セットアップ
 
-### セットアップ手順
-
-1. **プロジェクトを開く**
+リポジトリをクローンし、ディレクトリを Zed で開きます。
 
 ```bash
-code atcoder-java-template
+git clone https://github.com/willowtown0576/atcoder-java.git
+cd atcoder-java
+zed .
 ```
 
-2. **Dev Containerで開く**
-
-- `Ctrl+Shift+P` でコマンドパレットを開く
-- `Dev Containers: Reopen in Container` を選択
-- 初回は自動的にコンテナがビルドされます
-
-3. **AtCoderにログイン**
+コンテナをビルドして起動します。
 
 ```bash
-# ここを飛ばしても過去問のダウンロードは可能ですが、ログインしないとコンテストの参加ができません
+docker compose up -d --build
+```
+
+以降の操作はコンテナ内で行います。
+
+```bash
+docker compose exec atcoder-java bash
+```
+
+プロジェクトはコンテナの `/workspace` にマウントされるため、Zed で編集した内容がそのまま反映されます。
+
+## AtCoder へのログイン
+
+コンテナ内で `aclogin` を実行します。
+
+```bash
 aclogin
 ```
 
-AtCoderの`REVEL_SESSION` Cookieの取得方法は[このURL](https://github.com/key-moon/aclogin)を参照してください
+ログインには AtCoder の `REVEL_SESSION` Cookie が必要です。取得方法は [aclogin のドキュメント](https://github.com/key-moon/aclogin)を参照してください。
 
-## 📝 基本的な使い方
+ログイン情報と atcoder-cli の設定は Docker ボリューム `atcoder-config` に保存されます。コンテナを再作成しても保持されますが、ボリュームを削除すると失われます。
 
-### 問題のダウンロード
+## 基本的な使い方
+
+### 1. 問題をダウンロードする
+
+コンテナ内でコンテスト ID を指定します。
 
 ```bash
-# 例: ABC380の問題をダウンロード
 acc new abc380
 ```
 
-### 問題を解く
+ダウンロード後は、たとえば `abc380/a/Main.java` を Zed で編集します。
 
-1. `abc380/a/Main.java` を開く
-2. コードを書く
-3. テストを実行する
-
-### テスト実行
-
-**方法1: VSCodeタスク（推奨）**
-
-- `Ctrl+Shift+P` → `Tasks: Run Task` → `AtCoder: Test Current Problem`
-
-**方法2: コマンドライン**
+### 2. サンプルテストを実行する
 
 ```bash
-./test abc380 a
+make test CONTEST=abc380 PROBLEM=a
 ```
 
-### 提出
+`online-judge-tools` により `abc380/a/test/` のサンプルケースを実行します。
 
-**方法1: VSCodeタスク（推奨）**
-
-- `Ctrl+Shift+P` → `Tasks: Run Task` → `AtCoder: Submit Current Problem`
-
-**方法2: コマンドライン**
+### 3. 提出する
 
 ```bash
-./submit abc380 a
+make submit CONTEST=abc380 PROBLEM=a
 ```
 
-## ⚡ VSCodeの便利機能
-
-### タスク機能
-
-- `Ctrl+Shift+P` → `Tasks: Run Task` で以下が利用可能：
-  - **AtCoder: Download Contest** - 問題のダウンロード
-  - **AtCoder: Test Current Problem** - 現在の問題をテスト
-  - **AtCoder: Submit Current Problem** - 現在の問題を提出
-  - **AtCoder: Login** - AtCoderにログイン
-
-### デバッグ機能
-
-- `F5` でデバッグ実行
-- ブレークポイントで変数値を確認
-- ステップ実行でロジックを追跡
-
-### コード実行
-
-- `Ctrl+F5` でコードを直接実行（Code Runner）
-
-## 🛠️ 手動でのコンテナ操作
-
-VSCode以外でコンテナを操作したい場合：
+`Main.java` を AtCoder 言語 ID `5005` で提出します。別の言語 ID を使用する場合は、`LANGUAGE_ID` を指定できます。
 
 ```bash
-# コンテナをビルド・起動
-docker-compose up -d --build
+make submit CONTEST=abc380 PROBLEM=a LANGUAGE_ID=<言語ID>
+```
+
+提出前にサンプルテストが成功することを確認してください。
+
+### Make ターゲットを確認する
+
+```bash
+make help
+```
+
+`CONTEST` または `PROBLEM` を省略した場合は、実行せずに指定方法を表示します。
+
+## コンテナ操作
+
+以下はホスト側のターミナルで実行します。
+
+```bash
+# 起動
+docker compose up -d
+
+# 再ビルドして起動
+docker compose up -d --build
 
 # コンテナに入る
-docker-compose exec atcoder-java bash
+docker compose exec atcoder-java bash
 
-# コンテナを停止
-docker-compose down
+# 停止・削除
+docker compose down
+
+# キャッシュを使わずに再ビルド
+docker compose build --no-cache
 ```
 
-## 📁 プロジェクト構造
+## 開発環境
 
-```
+| ツール             | バージョン・用途                    |
+| ------------------ | ----------------------------------- |
+| Java               | Eclipse Temurin OpenJDK 21 LTS      |
+| Python             | 3.10（online-judge-tools、aclogin） |
+| Node.js            | 18.x（atcoder-cli）                 |
+| atcoder-cli        | 問題のダウンロード・提出            |
+| online-judge-tools | サンプルテストの実行                |
+| GNU Make           | テスト・提出コマンドの統一          |
+
+## プロジェクト構成
+
+```text
 atcoder-java/
-├── .devcontainer/      # Dev Container設定
-├── .vscode/           # VSCode設定（タスク、デバッグ等）
-├── abc380/           # 問題ディレクトリ（実行時に作成）
-│   ├── a/
-│   │   ├── Main.java
-│   │   └── test/      # サンプル入出力
-│   └── ...
-├── test              # テスト実行スクリプト
-└── submit            # 提出スクリプト
+├── .devcontainer/        # Dev Container 共通設定
+├── Dockerfile            # Java 21 開発イメージ
+├── docker-compose.yml    # コンテナ・ボリューム設定
+├── Makefile              # テスト・提出用コマンド
+└── abc380/               # acc new で作成されるコンテストディレクトリ
+    └── a/
+        ├── Main.java
+        └── test/
 ```
 
-## 🔧 環境詳細
+## Java テンプレート
 
-### インストール済みツール
-
-- **Java**: OpenJDK 17
-- **Python**: 3.10（atcoder-cli, online-judge-tools用）
-- **Node.js**: 18.x（atcoder-cli用）
-- **atcoder-cli**: 問題ダウンロード・提出
-- **online-judge-tools**: テスト実行
-
-### VSCode拡張機能
-
-- Java Extension Pack
-- Java Language Support
-- Code Runner
-
-### Javaテンプレート
+`acc new` で作成される `Main.java` の初期内容です。
 
 ```java
 import java.util.*;
@@ -147,31 +142,43 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-
         sc.close();
     }
 }
 ```
 
-## 🔍 トラブルシューティング
+## トラブルシューティング
 
-### Dockerビルドエラー
+### `make` や Java コマンドが見つからない
 
-```bash
-# キャッシュをクリアしてリビルド
-docker-compose build --no-cache
-```
-
-### 権限エラー
+コマンドをホスト側ではなく、コンテナ内で実行しているか確認してください。
 
 ```bash
-# テスト・提出スクリプトに実行権限を付与
-chmod +x test submit
+docker compose exec atcoder-java bash
+java -version
+make help
 ```
 
-## 📚 参考リンク
+### コンテナを作り直したい
+
+```bash
+docker compose down
+docker compose up -d --build
+```
+
+### AtCoder のログイン情報も初期化したい
+
+次の操作は `atcoder-config` ボリュームを削除するため、保存済みのログイン情報も失われます。
+
+```bash
+docker compose down -v
+docker compose up -d --build
+```
+
+## 参考リンク
 
 - [AtCoder](https://atcoder.jp/)
 - [atcoder-cli](https://github.com/Tatamo/atcoder-cli)
 - [online-judge-tools](https://github.com/online-judge-tools/oj)
-- [VSCode Dev Containers](https://code.visualstudio.com/docs/remote/containers)
+- [aclogin](https://github.com/key-moon/aclogin)
+- [Zed](https://zed.dev/)

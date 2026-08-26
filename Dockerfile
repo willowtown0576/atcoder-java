@@ -1,10 +1,10 @@
-FROM ubuntu:22.04
+FROM eclipse-temurin:21-jdk-jammy
 
 # 環境変数設定
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
-# 基本パッケージとJavaのインストール
+# 基本パッケージのインストール
 RUN apt-get update && apt-get install -y \
     curl \
     wget \
@@ -17,11 +17,6 @@ RUN apt-get update && apt-get install -y \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-# OpenJDK 17のインストール (AtCoderでサポートされているバージョン)
-RUN apt-get update && apt-get install -y openjdk-17-jdk && rm -rf /var/lib/apt/lists/* && \
-    # クロスプラットフォーム対応: 実際のJavaパスから固定パスへのシンボリックリンク作成
-    JAVA_PATH=$(find /usr/lib/jvm -name "java-17-openjdk*" -type d | head -1) && \
-    ln -sf "$JAVA_PATH" /usr/lib/jvm/java-17-openjdk
 
 # Python 3.10のインストール (競技プログラミング用最小構成)
 RUN apt-get update && apt-get install -y \
@@ -82,18 +77,12 @@ EOF
 RUN acc config default-task-choice all
 RUN acc config default-template java
 
-# プロジェクトファイルをコピー
-COPY test /workspace/test
-COPY submit /workspace/submit
+# Makeコマンドをコピー
+COPY Makefile /workspace/Makefile
 
-# 実行権限を付与
-RUN chmod +x /workspace/test /workspace/submit
 # 完了メッセージ
 RUN echo "AtCoder Java Environment Ready!"
 
-# 環境変数の設定
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-ENV PATH=$JAVA_HOME/bin:$PATH
 
 # デフォルトコマンド
 CMD ["/bin/bash"]

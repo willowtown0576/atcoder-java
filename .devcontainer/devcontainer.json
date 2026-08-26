@@ -4,52 +4,9 @@
   "service": "atcoder-java",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
-
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "vscjava.vscode-java-pack",
-        "redhat.java",
-        "formulahendry.code-runner"
-      ],
-      "settings": {
-        "java.configuration.detectJdksAtStart": false,
-        "java.configuration.runtimes": [
-          {
-            "name": "JavaSE-17",
-            "path": "/usr/lib/jvm/java-17-openjdk"
-          }
-        ],
-        "java.compile.nullAnalysis.mode": "disabled",
-        "java.debug.settings.console": "integratedTerminal",
-        "java.import.gradle.enabled": false,
-        "java.import.maven.enabled": false,
-        "java.saveActions.organizeImports": false,
-        "code-runner.executorMap": {
-          "java": "cd $dir && javac $fileName && java $fileNameWithoutExt"
-        },
-        "code-runner.runInTerminal": true,
-        "code-runner.saveFileBeforeRun": true,
-        "code-runner.clearPreviousOutput": true,
-        "files.associations": {
-          "*.java": "java"
-        },
-        "editor.formatOnSave": false,
-        "files.exclude": {
-          "**/*.class": true
-        }
-      }
-    }
-  },
-
-  "forwardPorts": [],
-
-  "postCreateCommand": "echo 'AtCoder Java Environment Ready!'",
-
   "remoteUser": "root",
-
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  }
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+  },
 }
