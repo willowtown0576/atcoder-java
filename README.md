@@ -77,13 +77,7 @@ make test abc380/a
 make submit abc380/a
 ```
 
-`abc380/a/Main.java` を AtCoder 言語 ID `5005` で提出する。提出前にサンプルテストが成功することを確認すること。
-
-別の言語 ID を使用する場合は、`LANGUAGE_ID` を指定できる。
-
-```bash
-make submit abc380/a LANGUAGE_ID=<言語ID>
-```
+`abc380/a/Main.java` を Java の AtCoder 言語 ID `5005` で提出する。提出前にサンプルテストが成功することを確認すること。
 
 ### 4. コンテストディレクトリを削除する
 
