@@ -1,4 +1,4 @@
-ATCODER_JAVA_LANGUAGE_ID := 5005
+ATCODER_JAVA_LANGUAGE_ID := 6056
 TEMPLATE_DIR := /root/.config/atcoder-cli-nodejs/java
 ARGUMENTS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 TARGET_DIR := $(firstword $(ARGUMENTS))
@@ -22,7 +22,7 @@ test: validate
 	cd "$(TARGET_DIR)" && oj t -c "java Main.java" -d ./test/
 
 submit: validate
-	cd "$(TARGET_DIR)" && acc submit Main.java -- -l "$(ATCODER_JAVA_LANGUAGE_ID)"
+	cd "$(TARGET_DIR)" && acc submit Main.java -- -l "$(ATCODER_JAVA_LANGUAGE_ID)" --yes
 
 template-sync:
 	@install -d "$(TEMPLATE_DIR)"

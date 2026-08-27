@@ -77,7 +77,10 @@ make test abc380/a
 make submit abc380/a
 ```
 
-`abc380/a/Main.java` を Java の AtCoder 言語 ID `5005` で提出する。提出前にサンプルテストが成功することを確認すること。
+`abc380/a/Main.java` を Java 24 の AtCoder 言語 ID `6056` で提出する。提出前にサンプルテストが成功することを確認すること。
+
+> [!WARNING]
+> AtCoder 側の機械的アクセスに対する制限により、コンテスト時間外は `make submit` から提出できない場合がある。その場合、`AtCoder says: × Error.` および `submission failed` と表示される。これはソースコードや `Makefile` のエラーとは限らないため、AtCoder の Web サイトから手動で提出すること。コンテスト中のコマンド提出についても、事前に動作を保証するものではない。
 
 ### 4. コンテストディレクトリを削除する
 
