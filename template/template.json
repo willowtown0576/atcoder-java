@@ -1,0 +1,7 @@
+{
+  "task": {
+    "program": ["Main.java"],
+    "submit": "Main.java",
+    "testdir": "test"
+  }
+}

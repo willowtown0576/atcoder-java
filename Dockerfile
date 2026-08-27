@@ -47,31 +47,8 @@ RUN mkdir -p /root/.config/atcoder-cli-nodejs
 # テンプレート設定用のディレクトリを作成
 RUN mkdir -p /root/.config/atcoder-cli-nodejs/java
 
-# テンプレートファイルの作成
-COPY <<EOF /root/.config/atcoder-cli-nodejs/java/template.json
-{
-  "task":{
-    "program": ["Main.java"],
-    "submit": "Main.java",
-    "testdir": "test"
-  }
-}
-EOF
-
-# Main.javaテンプレートの作成
-COPY <<EOF /root/.config/atcoder-cli-nodejs/java/Main.java
-import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-
-
-        sc.close();
-    }
-}
-EOF
+# atcoder-cli用Javaテンプレートをコピー
+COPY template/ /root/.config/atcoder-cli-nodejs/java/
 
 # atcoder-cliのデフォルト設定
 RUN acc config default-task-choice all

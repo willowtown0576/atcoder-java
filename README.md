@@ -1,109 +1,104 @@
 # AtCoder Java
 
-AtCoder に Java で参加するための、Docker ベースの開発環境です。エディタには Zed を使用し、コンパイル・サンプルテスト・提出はコンテナ内で実行します。
+AtCoder に Java で参加するための Dev Container 対応開発環境である。
+
+Dev Container に対応したエディタでプロジェクトを開くと、Java、atcoder-cli、online-judge-tools など、競技プログラミングに必要なツールをコンテナ内で利用できる。ホスト環境へ個別にツールをインストールする必要はない。
 
 ## 必要なもの
 
-- [Zed](https://zed.dev/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Dev Container に対応したエディタ
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)などのコンテナ実行環境
+- Git
 
 ## セットアップ
 
-リポジトリをクローンし、ディレクトリを Zed で開きます。
+### 1. プロジェクトをクローンする
 
 ```bash
 git clone https://github.com/willowtown0576/atcoder-java.git
-cd atcoder-java
-zed .
 ```
 
-コンテナをビルドして起動します。
+### 2. Dev Container で開く
 
-```bash
-docker compose up -d --build
-```
+1. Dev Container に対応したエディタで、クローンした `atcoder-java` ディレクトリを開く。
+2. エディタの Dev Container メニューまたはコマンドパレットから、コンテナで開く操作を選択する。
+3. 初回は開発用イメージが自動的にビルドされる。ビルド完了後、ワークスペースがコンテナ内の `/workspace` として開かれる。
 
-以降の操作はコンテナ内で行います。
-
-```bash
-docker compose exec atcoder-java bash
-```
-
-プロジェクトはコンテナの `/workspace` にマウントされるため、Zed で編集した内容がそのまま反映されます。
+以降、この README に記載するコマンドは、特記がない限り**エディタ上のコンテナ内ターミナル**で実行する。
 
 ## AtCoder へのログイン
 
-コンテナ内で `aclogin` を実行します。
+コンテナ内ターミナルで `aclogin` を実行する。
 
 ```bash
 aclogin
 ```
 
-ログインには AtCoder の `REVEL_SESSION` Cookie が必要です。取得方法は [aclogin のドキュメント](https://github.com/key-moon/aclogin)を参照してください。
+ログインには AtCoder の `REVEL_SESSION` Cookie が必要である。取得方法は [aclogin のドキュメント](https://github.com/key-moon/aclogin)を参照すること。
 
-ログイン情報と atcoder-cli の設定は Docker ボリューム `atcoder-config` に保存されます。コンテナを再作成しても保持されますが、ボリュームを削除すると失われます。
+ログイン情報と atcoder-cli の設定は Docker ボリューム `atcoder-config` に保存される。コンテナを再作成しても保持されるが、関連ボリュームを削除すると失われる。
 
 ## 基本的な使い方
 
 ### 1. 問題をダウンロードする
 
-コンテナ内でコンテスト ID を指定します。
+コンテスト ID を指定して問題をダウンロードする。
 
 ```bash
 acc new abc380
 ```
 
-ダウンロード後は、たとえば `abc380/a/Main.java` を Zed で編集します。
+問題ごとにディレクトリと `Main.java`、サンプルケースが作成される。
+
+```text
+abc380/
+└── a/
+    ├── Main.java
+    └── test/
+```
+
+`abc380/a/Main.java` をエディタで開いて実装する。
 
 ### 2. サンプルテストを実行する
 
+問題ディレクトリを指定する。
+
 ```bash
-make test CONTEST=abc380 PROBLEM=a
+make test abc380/a
 ```
 
-`online-judge-tools` により `abc380/a/test/` のサンプルケースを実行します。
+`online-judge-tools` が `abc380/a/test/` にあるサンプルケースを使用して `Main.java` を実行する。
+
+問題ディレクトリの指定がない場合や、対象ディレクトリが存在しない場合は、テストを開始せずエラーを表示する。
 
 ### 3. 提出する
 
 ```bash
-make submit CONTEST=abc380 PROBLEM=a
+make submit abc380/a
 ```
 
-`Main.java` を AtCoder 言語 ID `5005` で提出します。別の言語 ID を使用する場合は、`LANGUAGE_ID` を指定できます。
+`abc380/a/Main.java` を AtCoder 言語 ID `5005` で提出する。提出前にサンプルテストが成功することを確認すること。
+
+別の言語 ID を使用する場合は、`LANGUAGE_ID` を指定できる。
 
 ```bash
-make submit CONTEST=abc380 PROBLEM=a LANGUAGE_ID=<言語ID>
+make submit abc380/a LANGUAGE_ID=<言語ID>
 ```
 
-提出前にサンプルテストが成功することを確認してください。
+### 4. コンテストディレクトリを削除する
+
+```bash
+make clean
+```
+
+プロジェクト直下にあり、atcoder-cli が生成する `contest.acc.json` を含むディレクトリをコンテストディレクトリと判定して削除する。ディレクトリ名には依存しないため、ABC、ARC、AGC、AHC などをまとめて削除できる。
+
+この操作は対象ディレクトリ内の `Main.java` やサンプルケースも削除する。未コミットのファイルは復元できないため、必要なコードをコミットしたことを確認してから実行すること。
 
 ### Make ターゲットを確認する
 
 ```bash
 make help
-```
-
-`CONTEST` または `PROBLEM` を省略した場合は、実行せずに指定方法を表示します。
-
-## コンテナ操作
-
-以下はホスト側のターミナルで実行します。
-
-```bash
-# 起動
-docker compose up -d
-
-# 再ビルドして起動
-docker compose up -d --build
-
-# コンテナに入る
-docker compose exec atcoder-java bash
-
-# 停止・削除
-docker compose down
-
-# キャッシュを使わずに再ビルド
-docker compose build --no-cache
 ```
 
 ## 開発環境
@@ -121,11 +116,15 @@ docker compose build --no-cache
 
 ```text
 atcoder-java/
-├── .devcontainer/        # Dev Container 共通設定
-├── Dockerfile            # Java 21 開発イメージ
-├── docker-compose.yml    # コンテナ・ボリューム設定
-├── Makefile              # テスト・提出用コマンド
-└── abc380/               # acc new で作成されるコンテストディレクトリ
+├── .devcontainer/
+│   └── devcontainer.json  # Dev Container 設定
+├── Dockerfile             # Java 21 開発イメージ
+├── docker-compose.yml     # コンテナと永続ボリュームの設定
+├── Makefile               # テスト・提出・同期・クリーンコマンド
+├── template/
+│   ├── Main.java          # Javaテンプレート本体
+│   └── template.json      # atcoder-cliテンプレート設定
+└── abc380/                # acc new で作成されるコンテストディレクトリ
     └── a/
         ├── Main.java
         └── test/
@@ -133,52 +132,31 @@ atcoder-java/
 
 ## Java テンプレート
 
-`acc new` で作成される `Main.java` の初期内容です。
+Java テンプレートは Dockerfile ではなく、プロジェクト内の `template/` で管理する。
 
-```java
-import java.util.*;
+- `template/Main.java`: `acc new` で生成する Java コード
+- `template/template.json`: atcoder-cli のテンプレート設定
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        sc.close();
-    }
-}
-```
-
-## トラブルシューティング
-
-### `make` や Java コマンドが見つからない
-
-コマンドをホスト側ではなく、コンテナ内で実行しているか確認してください。
+スニペット、入力補助クラス、定数、ユーティリティメソッドなどを追加する場合は、`template/Main.java` を直接編集する。編集後、次のコマンドで atcoder-cli の設定ディレクトリへ反映する。
 
 ```bash
-docker compose exec atcoder-java bash
-java -version
-make help
+make template-sync
 ```
 
-### コンテナを作り直したい
+同期後に実行した `acc new` から新しいテンプレートが使われる。すでに作成済みの問題にある `Main.java` は変更されない。
 
-```bash
-docker compose down
-docker compose up -d --build
-```
+Dev Container の新規作成時にも `postCreateCommand` から自動同期されるため、通常は次の流れとなる。
 
-### AtCoder のログイン情報も初期化したい
+1. `template/Main.java` を編集する。
+2. `make template-sync` を実行する。
+3. `acc new <コンテストID>` で問題を作成する。
 
-次の操作は `atcoder-config` ボリュームを削除するため、保存済みのログイン情報も失われます。
-
-```bash
-docker compose down -v
-docker compose up -d --build
-```
+テンプレート更新だけで Dev Container を再ビルドする必要はない。
 
 ## 参考リンク
 
+- [Development Containers](https://containers.dev/)
 - [AtCoder](https://atcoder.jp/)
 - [atcoder-cli](https://github.com/Tatamo/atcoder-cli)
 - [online-judge-tools](https://github.com/online-judge-tools/oj)
 - [aclogin](https://github.com/key-moon/aclogin)
-- [Zed](https://zed.dev/)
