@@ -11,6 +11,7 @@
 # Contest directories downloaded by atcoder-cli
 /*/
 !/.devcontainer/
+!/docs/
 !/template/
 
 # Editor temporary files

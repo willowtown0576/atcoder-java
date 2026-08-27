@@ -115,6 +115,8 @@ atcoder-java/
 ├── Dockerfile             # Java 21 開発イメージ
 ├── docker-compose.yml     # コンテナと永続ボリュームの設定
 ├── Makefile               # テスト・提出・同期・クリーンコマンド
+├── docs/
+│   └── java-cheatsheet.md # Java標準API・データ型の早見表
 ├── template/
 │   ├── Main.java          # Javaテンプレート本体
 │   └── template.json      # atcoder-cliテンプレート設定
@@ -146,6 +148,12 @@ Dev Container の新規作成時にも `postCreateCommand` から自動同期さ
 3. `acc new <コンテストID>` で問題を作成する。
 
 テンプレート更新だけで Dev Container を再ビルドする必要はない。
+
+## Java 早見表
+
+[`docs/java-cheatsheet.md`](docs/java-cheatsheet.md) に、競技中に名前や使い方を忘れやすい Java 21 の標準 API とデータ型をまとめている。
+
+対象は配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、短い定番処理などである。`template/Main.java` に実装済みのアルゴリズムは重複して含めない。
 
 ## 参考リンク
 
