@@ -8,6 +8,11 @@
 .project
 .settings/
 
+# Contest directories downloaded by atcoder-cli
+/*/
+!/.devcontainer/
+!/template/
+
 # Editor temporary files
 *.swp
 *.swo
