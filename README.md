@@ -4,6 +4,19 @@ AtCoder に Java で参加するための Dev Container 対応開発環境であ
 
 Dev Container に対応したエディタでプロジェクトを開くと、Java、atcoder-cli、online-judge-tools など、競技プログラミングに必要なツールをコンテナ内で利用できる。
 
+## 目次
+
+- [必要なもの](#必要なもの)
+- [セットアップ](#セットアップ)
+- [AtCoder へのログイン](#atcoder-へのログイン)
+- [基本的な使い方](#基本的な使い方)
+- [開発環境](#開発環境)
+- [プロジェクト構成](#プロジェクト構成)
+- [Java テンプレート](#java-テンプレート)
+- [Java 早見表](#java-早見表)
+- [アルゴリズム集](#アルゴリズム集)
+- [参考リンク](#参考リンク)
+
 ## 必要なもの
 
 - Dev Container に対応したエディタ
@@ -119,6 +132,7 @@ atcoder-java/
 ├── docker-compose.yml     # コンテナと永続ボリュームの設定
 ├── Makefile               # テスト・提出・同期・クリーンコマンド
 ├── docs/
+│   ├── algorithms.md      # 頻出アルゴリズムと実装例
 │   └── java-cheatsheet.md # Java標準API・データ型の早見表
 ├── template/
 │   ├── Main.java          # Javaテンプレート本体
@@ -156,7 +170,13 @@ Dev Container の新規作成時にも `postCreateCommand` から自動同期さ
 
 [`docs/java-cheatsheet.md`](docs/java-cheatsheet.md) に、競技中に名前や使い方を忘れやすい Java 21 の標準 API とデータ型をまとめている。
 
-対象は配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、短い定番処理などである。
+対象は基本構文、型変換、配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、Stream API などである。
+
+## アルゴリズム集
+
+[`docs/algorithms.md`](docs/algorithms.md) に、競技プログラミングで頻出するアルゴリズムの採用条件、計算量、Java の実装例、注意点をまとめている。
+
+各桁の和などの基本処理、BFS、DFS、Union-Find、Dijkstra 法、0-1 BFS、トポロジカルソート、二分探索、累積和、いもす法、尺取り法、座標圧縮、動的計画法、全探索、貪欲法、木の基本処理などを扱う。
 
 ## 参考リンク
 

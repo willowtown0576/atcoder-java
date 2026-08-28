@@ -1,6 +1,217 @@
 # Java 21 Cheat Sheet for AtCoder
 
-Java の標準 API、型、変換方法と、短い定番処理をすぐに確認するための早見表である。`template/Main.java` に実装済みのアルゴリズムは重複して扱わない。
+Java 21 の構文、型、標準 API、変換方法をすぐに確認するための早見表である。問題を解くためのアルゴリズムは `algorithms.md` に分離する。
+
+## 目次
+
+- [似たメソッド・型の違い](#似たメソッド型の違い)
+- [よく使う import](#よく使う-import)
+- [プリミティブ型](#プリミティブ型)
+- [数値変換](#数値変換)
+- [`Math`](#math)
+- [配列](#配列)
+- [`String`](#string)
+- [`StringBuilder`](#stringbuilder)
+- [`List`](#list)
+- [`Set`](#set)
+- [`Map`](#map)
+- [キュー・スタック・両端キュー](#キュースタック両端キュー)
+- [`PriorityQueue`](#priorityqueue)
+- [ソートと `Comparator`](#ソートと-comparator)
+- [簡単なデータ型](#簡単なデータ型)
+- [`BigInteger`](#biginteger)
+- [`BitSet`](#bitset)
+- [`Collections`](#collections)
+- [`Character`](#character)
+- [ビット演算](#ビット演算)
+- [`Stream` の最小限の使用例](#stream-の最小限の使用例)
+- [`OptionalInt` などから値を取り出す](#optionalint-などから値を取り出す)
+- [Java API の実用パターン](#java-api-の実用パターン)
+
+## 似たメソッド・型の違い
+
+用途を混同しやすい Java API の違いをまとめる。
+
+### `trim` と `strip`
+
+| メソッド  | 空白の判定                                       | Java          |
+| --------- | ------------------------------------------------ | ------------- |
+| `trim()`  | `U+0020` 以下の文字                              | Java 1.0 以降 |
+| `strip()` | `Character.isWhitespace` が認識する Unicode 空白 | Java 11 以降  |
+
+```java
+String text = "\u2003Hello\u2003"; // EM SPACE
+text.trim(); // EM SPACEは残る
+text.strip(); // "Hello"
+```
+
+Java 21 では、Unicode 空白を扱える `strip()` を基本とする。先頭だけなら `stripLeading()`、末尾だけなら `stripTrailing()` を使う。
+
+### `isEmpty` と `isBlank`
+
+| メソッド    | `true` になる条件                |
+| ----------- | -------------------------------- |
+| `isEmpty()` | 長さが0                          |
+| `isBlank()` | 長さが0、または全て Unicode 空白 |
+
+```java
+"   ".isEmpty(); // false
+"   ".isBlank(); // true
+```
+
+### `==`、`equals`、`compareTo`
+
+| 方法                      | 比較内容                         |
+| ------------------------- | -------------------------------- |
+| `first == second`         | 同じオブジェクトを参照しているか |
+| `first.equals(second)`    | 内容が等しいか                   |
+| `first.compareTo(second)` | 辞書順・大小関係                 |
+
+文字列やラッパー型の内容比較には `equals` を使う。大小関係が必要なら `compareTo` を使う。
+
+### `parseInt` と `valueOf`
+
+| メソッド                 | 戻り値    |
+| ------------------------ | --------- |
+| `Integer.parseInt(text)` | `int`     |
+| `Integer.valueOf(text)`  | `Integer` |
+
+```java
+int primitive = Integer.parseInt("123");
+Integer boxed = Integer.valueOf("123");
+```
+
+プリミティブ値が必要なら `parseInt`、オブジェクトが必要なら `valueOf` を使う。`Long`、`Double` などにも同様のメソッドがある。
+
+### `Arrays.asList`、`List.of`、`Stream.toList`
+
+| 作成方法               | 要素変更 | 追加・削除 | `null`             |
+| ---------------------- | -------- | ---------- | ------------------ |
+| `Arrays.asList(array)` | 可       | 不可       | 可                 |
+| `List.of(values...)`   | 不可     | 不可       | 不可               |
+| `stream.toList()`      | 不可     | 不可       | Stream内にあれば可 |
+
+`Arrays.asList` は元配列と要素を共有する固定長リストである。変更可能な独立リストが必要なら次を使う。
+
+```java
+List<String> mutable = new ArrayList<>(Arrays.asList(array));
+```
+
+### `List.remove(index)` と `List.remove(value)`
+
+`List<Integer>` では整数引数がインデックスとして解釈される。
+
+```java
+list.remove(2);                  // index 2を削除
+list.remove(Integer.valueOf(2)); // 値2を最初に見つけた位置から削除
+```
+
+### `getOrDefault`、`putIfAbsent`、`computeIfAbsent`
+
+| メソッド                          | Mapを変更するか            | 主な用途             |
+| --------------------------------- | -------------------------- | -------------------- |
+| `getOrDefault(key, defaultValue)` | 変更しない                 | 値の取得だけ         |
+| `putIfAbsent(key, value)`         | キーがなければ追加         | 作成済みの値を登録   |
+| `computeIfAbsent(key, function)`  | キーがなければ計算して追加 | リストなどを遅延作成 |
+
+```java
+int count = map.getOrDefault(key, 0);
+map.putIfAbsent(key, initialValue);
+map.computeIfAbsent(key, ignored -> new ArrayList<>()).add(value);
+```
+
+### `add` と `offer`、`remove` と `poll`、`element` と `peek`
+
+キューでは、失敗時に例外を投げるメソッドと特別値を返すメソッドがある。
+
+| 操作     | 例外を投げる | 特別値を返す              |
+| -------- | ------------ | ------------------------- |
+| 追加     | `add`        | `offer`（失敗時 `false`） |
+| 取り出し | `remove`     | `poll`（空なら `null`）   |
+| 先頭確認 | `element`    | `peek`（空なら `null`）   |
+
+`ArrayDeque` は通常容量不足にならないため、追加では `add` と `offer` の差が現れにくい。空キューを許容する処理では `poll`、空でないことが前提なら `remove` を使う。
+
+### `HashSet`、`LinkedHashSet`、`TreeSet`
+
+| 型              | 順序     | 基本操作    |
+| --------------- | -------- | ----------- |
+| `HashSet`       | 保証なし | 平均 $O(1)$ |
+| `LinkedHashSet` | 挿入順   | 平均 $O(1)$ |
+| `TreeSet`       | ソート順 | $O(\log N)$  |
+
+大小関係や `floor`、`ceiling` が必要なら `TreeSet`、順序が不要なら `HashSet` を基本とする。
+
+### `HashMap`、`LinkedHashMap`、`TreeMap`
+
+| 型              | キーの順序 | 基本操作    |
+| --------------- | ---------- | ----------- |
+| `HashMap`       | 保証なし   | 平均 $O(1)$ |
+| `LinkedHashMap` | 挿入順     | 平均 $O(1)$ |
+| `TreeMap`       | ソート順   | $O(\log N)$  |
+
+キー順の走査や境界検索が必要なら `TreeMap` を使う。
+
+### `Comparable` と `Comparator`
+
+| 型              | 役割                          |
+| --------------- | ----------------------------- |
+| `Comparable<T>` | クラス自身の自然順序を1つ定義 |
+| `Comparator<T>` | 用途ごとの順序を外部から定義  |
+
+```java
+Comparator<Item> byScore = Comparator.comparingInt(Item::score);
+Comparator<Item> byIndex = Comparator.comparingInt(Item::index);
+```
+
+同じ型を問題ごとに異なる順序で並べる競技プログラミングでは、`Comparator` を使うことが多い。
+
+### `Arrays.equals` と `Arrays.deepEquals`
+
+| メソッド            | 比較対象                 |
+| ------------------- | ------------------------ |
+| `Arrays.equals`     | 一次元配列の各要素       |
+| `Arrays.deepEquals` | 多次元配列を再帰的に比較 |
+
+```java
+Arrays.equals(firstRow, secondRow);
+Arrays.deepEquals(firstGrid, secondGrid);
+```
+
+多次元配列へ `Arrays.equals` を使うと、内側の配列は参照として比較される。
+
+### `floor`、`ceil`、`round`、`rint`
+
+| メソッド     | 丸め方向                           | 戻り値         |
+| ------------ | ---------------------------------- | -------------- |
+| `Math.floor` | 負の無限大方向                     | `double`       |
+| `Math.ceil`  | 正の無限大方向                     | `double`       |
+| `Math.round` | 最も近い整数。中間は正の無限大方向 | `int` / `long` |
+| `Math.rint`  | 最も近い整数値。中間は偶数側       | `double`       |
+
+負数では「小数部分を捨てる」と `floor` が一致しない点に注意する。
+
+### `orElse` と `orElseGet`
+
+| メソッド              | デフォルト値の評価             |
+| --------------------- | ------------------------------ |
+| `orElse(value)`       | Optionalに値があっても先に評価 |
+| `orElseGet(supplier)` | Optionalが空のときだけ評価     |
+
+作成コストが高いデフォルト値には `orElseGet` を使う。
+
+```java
+Value value = optional.orElseGet(() -> createExpensiveDefault());
+```
+
+### `StringBuilder` と `StringBuffer`
+
+| 型              | スレッドセーフ | 一般的な選択               |
+| --------------- | -------------- | -------------------------- |
+| `StringBuilder` | いいえ         | 単一スレッドで高速         |
+| `StringBuffer`  | はい           | 複数スレッドで共有する場合 |
+
+競技プログラミングは通常単一スレッドなので `StringBuilder` を使う。
 
 ## よく使う import
 
@@ -563,47 +774,11 @@ int required = result.orElseThrow();
 - `OptionalLong`
 - `OptionalDouble`
 
-## 頻出コードパターン
+## Java API の実用パターン
 
-`template/Main.java` にない、競技プログラミングで頻出するコードパターンをまとめる。
+標準 API の組み合わせや、Java 固有の変換方法をまとめる。問題を解くためのアルゴリズムは [`algorithms.md`](algorithms.md) に記載する。
 
-### 各桁の数字の和
-
-文字列から求める場合:
-
-```java
-int digitSum = text.chars().map(character -> character - '0').sum();
-```
-
-整数から求める場合:
-
-```java
-static int digitSum(long value) {
-    value = Math.abs(value);
-    int sum = 0;
-    do {
-        sum += value % 10;
-        value /= 10;
-    } while (value > 0);
-    return sum;
-}
-```
-
-`Long.MIN_VALUE` は `Math.abs` でも正数にできない。入力範囲に含まれる場合は文字列として扱う。
-
-### 10進数の桁数
-
-```java
-int digits = Long.toString(Math.abs(value)).length();
-```
-
-`Long.MIN_VALUE` を含む場合:
-
-```java
-int digits = Long.toString(value).replace("-", "").length();
-```
-
-### 各桁を配列にする
+### 文字列の各桁を配列に変換する
 
 ```java
 int[] digits = text.chars().map(character -> character - '0').toArray();
@@ -620,52 +795,26 @@ int[] digits = Long.toString(value)
 
 負数を扱う場合は符号を除いてから変換する。
 
-### 文字列が回文か判定する
-
-```java
-boolean palindrome = text.contentEquals(new StringBuilder(text).reverse());
-```
-
-### 文字列を逆順にする
+### `StringBuilder` で文字列を逆順にする
 
 ```java
 String reversed = new StringBuilder(text).reverse().toString();
 ```
 
-### 英小文字と0始まりの添字を変換する
+### 英字と0始まりの添字を変換する
 
 ```java
-int index = character - 'a';
-char character = (char) ('a' + index);
+int lowerIndex = lowerCharacter - 'a';
+char lowerCharacter = (char) ('a' + lowerIndex);
+
+int upperIndex = upperCharacter - 'A';
+char upperCharacter = (char) ('A' + upperIndex);
 ```
 
-英大文字の場合:
-
-```java
-int index = character - 'A';
-char character = (char) ('A' + index);
-```
-
-### 英小文字の出現回数を数える
-
-```java
-int[] frequencies = new int[26];
-for (char character : text.toCharArray()) {
-    frequencies[character - 'a']++;
-}
-```
-
-### 配列の重複を除く
-
-ソート順を維持する必要がない場合:
+### `Stream` で配列の重複を除く
 
 ```java
 int[] unique = Arrays.stream(values).distinct().toArray();
-```
-
-ソート済みの一意な値が必要な場合:
-
-```java
 int[] sortedUnique = Arrays.stream(values).sorted().distinct().toArray();
 ```
 
@@ -677,20 +826,7 @@ for (int[] row : grid) {
 }
 ```
 
-### プリミティブ配列を降順にする
-
-`Arrays.sort` はプリミティブ配列に `Comparator` を指定できないため、昇順ソート後に反転する。
-
-```java
-Arrays.sort(values);
-for (int left = 0, right = values.length - 1; left < right; left++, right--) {
-    int temporary = values[left];
-    values[left] = values[right];
-    values[right] = temporary;
-}
-```
-
-### 0からn-1までの整数リストを作る
+### `IntStream` で整数リストを作る
 
 ```java
 List<Integer> indices = IntStream.range(0, n).boxed().toList();
@@ -704,31 +840,7 @@ List<Integer> indices = IntStream.range(0, n)
     .collect(Collectors.toCollection(ArrayList::new));
 ```
 
-### 全ての部分集合をビットで列挙する
-
-```java
-for (long subset = 0; subset < (1L << n); subset++) {
-    for (int index = 0; index < n; index++) {
-        if ((subset & (1L << index)) != 0) {
-            // index番目の要素を含む
-        }
-    }
-}
-```
-
-`1L << n` を使うため、通常は `n < 63` の場合に限る。
-
-### あるビット集合の部分集合を列挙する
-
-```java
-for (long subset = mask; subset > 0; subset = (subset - 1) & mask) {
-    // 空集合以外のsubset
-}
-```
-
-空集合も処理する場合はループ後に別途処理する。
-
-### 値を0以上の剰余に正規化する
+### `Math.floorMod` で剰余を0以上にする
 
 ```java
 int normalized = Math.floorMod(value, mod);
@@ -737,7 +849,7 @@ long normalized = Math.floorMod(value, mod);
 
 `value % mod` は `value` が負の場合に負の値を返す可能性がある。
 
-### 区切り文字付きでコレクションを出力する
+### `Collectors.joining` で区切って出力する
 
 ```java
 String result = values.stream()
