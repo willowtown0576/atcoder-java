@@ -854,6 +854,45 @@ int[] digits = Long.toString(value)
 
 負数を扱う場合は符号を除いてから変換する。
 
+### 各桁の配列を整数に変換する
+
+各要素が `0` 以上 `9` 以下で、上位桁から並んでいる `int[]` を `long` へ変換する。
+
+```java
+int[] digits = {1, 2, 3, 4, 5};
+
+long value = 0;
+for (int digit : digits) {
+    value = value * 10 + digit;
+}
+
+// value == 12345
+```
+
+現在の値を10倍して次の数字を加えることで、末尾へ1桁ずつ追加する。
+
+```text
+0 → 1 → 12 → 123 → 1234 → 12345
+```
+
+先頭に `0` がある場合、その情報は整数への変換時に失われる。
+
+```java
+int[] digits = {0, 0, 1, 2, 3};
+// 変換結果は123
+```
+
+結果が `long` の範囲を超える可能性がある場合は、文字列や `BigInteger` を使う。オーバーフローを例外として検出するなら、次のように書ける。
+
+```java
+long value = 0;
+for (int digit : digits) {
+    value = Math.addExact(Math.multiplyExact(value, 10), digit);
+}
+```
+
+この処理は各要素が `0` 以上 `9` 以下であることを前提とする。空配列の変換結果は `0` となる。
+
 ### `StringBuilder` で文字列を逆順にする
 
 ```java
