@@ -196,7 +196,7 @@ for (int left = 0, right = values.length - 1; left < right; left++, right--) {
 
 ### 考え方
 
-$`n`$ が合成数なら、$`n = ab`$ と表せる。もし $`a`$ と $`b`$ が両方とも $`\sqrt{n}`$ より大きければ、積は $`n`$ より大きくなってしまう。したがって、合成数には必ず $`\sqrt{n}`$ 以下の約数が存在する。
+$`n`$ が合成数なら、$`n = a \cdot b`$ と表せる。もし $`a`$ と $`b`$ が両方とも $`\sqrt{n}`$ より大きければ、積は $`n`$ より大きくなってしまう。したがって、合成数には必ず $`\sqrt{n}`$ 以下の約数が存在する。
 
 この性質により、$`2`$ から $`n - 1`$ まで調べる必要はなく、$`\sqrt{n}`$ まで割り切れる数があるか確認すればよい。
 
@@ -236,7 +236,7 @@ $`O(\sqrt{n})`$
 
 素数 `p` が見つかったら、`p` の倍数はすべて合成数である。小さい素数から順に倍数を消していくと、最後まで消されなかった2以上の整数だけが素数として残る。
 
-$`p`$ の倍数を $`2p`$ から消す必要はない。$`2p, 3p, \ldots, (p - 1)p`$ は、それより小さい因数を処理した時点ですでに消されている。そのため、未処理の可能性がある最初の倍数 $`p^2`$ から始められる。
+$`p`$ の倍数を $`2 \cdot p`$ から消す必要はない。$`2 \cdot p, 3 \cdot p, \ldots, (p - 1) \cdot p`$ は、それより小さい因数を処理した時点ですでに消されている。そのため、未処理の可能性がある最初の倍数 $`p^2`$ から始められる。
 
 ### 実装
 
@@ -252,7 +252,7 @@ if (prime[value]) {
 
 ### 計算量
 
-- 時間: $`O(N \log\log N)`$
+- 時間: $`O(N \log\,\log N)`$
 - メモリ: $`O(N)`$
 
 ### 採用判断
@@ -281,7 +281,7 @@ $$
 \gcd(a, b) = \gcd(b, a \bmod b)
 $$
 
-$`a = qb + r`$ とすると、$`a`$ と $`b`$ の共通約数は $`r = a - qb`$ も割り切る。逆に、$`b`$ と $`r`$ の共通約数は $`a = qb + r`$ も割り切る。したがって、2組の共通約数は同じであり、最大公約数も変わらない。
+$`a = q \cdot b + r`$ とすると、$`a`$ と $`b`$ の共通約数は $`r = a - q \cdot b`$ も割り切る。逆に、$`b`$ と $`r`$ の共通約数は $`a = q \cdot b + r`$ も割り切る。したがって、2組の共通約数は同じであり、最大公約数も変わらない。
 
 余りへ置き換えるたびに値が小さくなり、余りが0になったときの除数が最大公約数となる。
 
@@ -295,7 +295,7 @@ long divisor = gcd(first, second);
 
 ### 計算量
 
-$`O(\log \min(|a|, |b|))`$
+$`O(\log(\min(|a|, |b|)))`$
 
 ### 重要な性質
 
@@ -323,7 +323,7 @@ for (long value : values) {
 素因数分解で見ると、GCD は各素因数の指数の最小値、LCM は最大値を取る。この関係から次が成り立つ。
 
 $$
-|ab| = \gcd(a, b) \cdot \mathrm{lcm}(a, b)
+|a \cdot b| = \gcd(a, b) \cdot \mathrm{lcm}(a, b)
 $$
 
 よって次の式で求められる。
@@ -345,7 +345,7 @@ long multiple = lcm(first, second);
 
 ### 計算量
 
-GCD が支配するため $`O(\log \min(|a|, |b|))`$。
+GCD が支配するため $`O(\log(\min(|a|, |b|)))`$。
 
 ### 注意点
 
@@ -430,8 +430,8 @@ $$
   &= ((a \bmod m) + (b \bmod m)) \bmod m \\
 (a - b) \bmod m
   &= ((a \bmod m) - (b \bmod m)) \bmod m \\
-(ab) \bmod m
-  &= ((a \bmod m)(b \bmod m)) \bmod m
+(a \cdot b) \bmod m
+  &= ((a \bmod m) \cdot (b \bmod m)) \bmod m
 \end{aligned}
 $$
 
@@ -441,7 +441,7 @@ $$
 \begin{aligned}
 a + b &\equiv a' + b' \pmod m \\
 a - b &\equiv a' - b' \pmod m \\
-ab &\equiv a'b' \pmod m
+a \cdot b &\equiv a' \cdot b' \pmod m
 \end{aligned}
 $$
 
@@ -566,7 +566,7 @@ $$
 
 底を毎回二乗すると、$`\mathrm{base}^{1}, \mathrm{base}^{2}, \mathrm{base}^{4}, \mathrm{base}^{8}, \ldots`$ を順に作れる。指数の最下位ビットが1のときだけ、その底を答えへ掛ける。
 
-各反復で指数を半分にするため、指数回の掛け算ではなく $`O(\log \mathrm{exponent})`$ 回で済む。
+各反復で指数を半分にするため、指数回の掛け算ではなく $`O(\log(\mathrm{exponent}))`$ 回で済む。
 
 ### 実装
 
@@ -593,7 +593,7 @@ $$
 
 ### 計算量
 
-- 時間: $`O(\log \mathrm{exponent})`$
+- 時間: $`O(\log(\mathrm{exponent}))`$
 - メモリ: $`O(1)`$
 
 ### 注意点
@@ -1494,7 +1494,7 @@ for (int index = 0; index < n; index++) {
 - 重さの合計に上限がある
 - 価値の最大化を求める
 
-計算量 $`O(NW)`$。
+計算量 $`O(N \cdot W)`$。
 
 ```java
 long[] dp = new long[capacity + 1];
@@ -1553,7 +1553,7 @@ for (int firstIndex = 0; firstIndex < first.length(); firstIndex++) {
 }
 ```
 
-計算量とメモリは $`O(NM)`$。
+計算量とメモリは $`O(N \cdot M)`$。
 
 ## メモ化再帰
 
