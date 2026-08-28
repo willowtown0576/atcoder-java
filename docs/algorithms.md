@@ -196,7 +196,7 @@ for (int left = 0, right = values.length - 1; left < right; left++, right--) {
 
 ### 考え方
 
-$`n`$ が合成数なら、$`n = a \cdot b`$ と表せる。もし $`a`$ と $`b`$ が両方とも $`\sqrt{n}`$ より大きければ、積は $`n`$ より大きくなってしまう。したがって、合成数には必ず $`\sqrt{n}`$ 以下の約数が存在する。
+$`n`$ が合成数なら、$`n = ab`$ と表せる。もし $`a`$ と $`b`$ が両方とも $`\sqrt{n}`$ より大きければ、積は $`n`$ より大きくなってしまう。したがって、合成数には必ず $`\sqrt{n}`$ 以下の約数が存在する。
 
 この性質により、$`2`$ から $`n - 1`$ まで調べる必要はなく、$`\sqrt{n}`$ まで割り切れる数があるか確認すればよい。
 
@@ -236,7 +236,7 @@ $`O(\sqrt{n})`$
 
 素数 `p` が見つかったら、`p` の倍数はすべて合成数である。小さい素数から順に倍数を消していくと、最後まで消されなかった2以上の整数だけが素数として残る。
 
-$`p`$ の倍数を $`2 \cdot p`$ から消す必要はない。$`2 \cdot p, 3 \cdot p, \ldots, (p - 1) \cdot p`$ は、それより小さい因数を処理した時点ですでに消されている。そのため、未処理の可能性がある最初の倍数 $`p^2`$ から始められる。
+$`p`$ の倍数を $`2p`$ から消す必要はない。$`2p, 3p, \ldots, (p - 1)p`$ は、それより小さい因数を処理した時点ですでに消されている。そのため、未処理の可能性がある最初の倍数 $`p^2`$ から始められる。
 
 ### 実装
 
@@ -281,7 +281,7 @@ $$
 \gcd(a, b) = \gcd(b, a \bmod b)
 $$
 
-$`a = q \cdot b + r`$ とすると、$`a`$ と $`b`$ の共通約数は $`r = a - q \cdot b`$ も割り切る。逆に、$`b`$ と $`r`$ の共通約数は $`a = q \cdot b + r`$ も割り切る。したがって、2組の共通約数は同じであり、最大公約数も変わらない。
+$`a = qb + r`$ とすると、$`a`$ と $`b`$ の共通約数は $`r = a - qb`$ も割り切る。逆に、$`b`$ と $`r`$ の共通約数は $`a = qb + r`$ も割り切る。したがって、2組の共通約数は同じであり、最大公約数も変わらない。
 
 余りへ置き換えるたびに値が小さくなり、余りが0になったときの除数が最大公約数となる。
 
@@ -323,14 +323,14 @@ for (long value : values) {
 素因数分解で見ると、GCD は各素因数の指数の最小値、LCM は最大値を取る。この関係から次が成り立つ。
 
 $$
-|a \cdot b| = \gcd(a, b) \cdot \mathrm{lcm}(a, b)
+|ab| = \gcd(a, b)\mathrm{lcm}(a, b)
 $$
 
 よって次の式で求められる。
 
 $$
 \mathrm{lcm}(a, b)
-= \left|\frac{a}{\gcd(a, b)} \cdot b\right|
+= \left|\frac{a}{\gcd(a, b)}b\right|
 $$
 
 先に GCD で割ることで、`a * b` を直接計算するよりオーバーフローしにくくなる。
@@ -364,7 +364,7 @@ GCD が支配するため $`O(\log(\min(|a|, |b|)))`$。
 `d` が `n` の約数なら、`n / d` も約数である。約数は積が `n` になるペアで現れる。
 
 $$
-d \cdot \frac{n}{d} = n
+d\frac{n}{d} = n
 $$
 
 各ペアの片方は必ず $`\sqrt{n}`$ 以下なので、$`1`$ から $`\sqrt{n}`$ まで調べれば全約数を発見できる。
@@ -430,8 +430,8 @@ $$
   &= ((a \bmod m) + (b \bmod m)) \bmod m \\
 (a - b) \bmod m
   &= ((a \bmod m) - (b \bmod m)) \bmod m \\
-(a \cdot b) \bmod m
-  &= ((a \bmod m) \cdot (b \bmod m)) \bmod m
+(ab) \bmod m
+  &= (a \bmod m)(b \bmod m) \bmod m
 \end{aligned}
 $$
 
@@ -441,7 +441,7 @@ $$
 \begin{aligned}
 a + b &\equiv a' + b' \pmod m \\
 a - b &\equiv a' - b' \pmod m \\
-a \cdot b &\equiv a' \cdot b' \pmod m
+ab &\equiv a'b' \pmod m
 \end{aligned}
 $$
 
@@ -491,7 +491,7 @@ long difference = (a - b + mod) % mod;
 加算・減算・乗算と異なり、合同式の両辺を任意の値で割ることはできない。たとえば、法6では次が成り立つ。
 
 $$
-2 \cdot 1 \equiv 2 \cdot 4 \pmod 6
+2(1) \equiv 2(4) \pmod 6
 $$
 
 しかし、両辺を2で割った次の式は成り立たない。
@@ -503,7 +503,7 @@ $$
 法 `mod` のもとで `a` による除算を行うには、次を満たす **逆元** $`a^{-1}`$ を掛ける。
 
 $$
-a \cdot a^{-1} \equiv 1 \pmod {\mathrm{mod}}
+a(a^{-1}) \equiv 1 \pmod {\mathrm{mod}}
 $$
 
 逆元が存在する条件は次のとおりである。
@@ -558,9 +558,9 @@ $$
 \begin{aligned}
 13 &= 8 + 4 + 1 \\
 \mathrm{base}^{13}
-  &= \mathrm{base}^{8}
-   \cdot \mathrm{base}^{4}
-   \cdot \mathrm{base}
+  &= (\mathrm{base}^{8})
+   (\mathrm{base}^{4})
+   (\mathrm{base})
 \end{aligned}
 $$
 
@@ -584,8 +584,7 @@ $$
 \mathrm{base}_{0}^{\mathrm{exponent}_{0}}
 \equiv
 \mathrm{result}
-\cdot
-\mathrm{base}^{\mathrm{exponent}}
+(\mathrm{base}^{\mathrm{exponent}})
 \pmod m
 $$
 
@@ -1494,7 +1493,7 @@ for (int index = 0; index < n; index++) {
 - 重さの合計に上限がある
 - 価値の最大化を求める
 
-計算量 $`O(N \cdot W)`$。
+計算量 $`O(NW)`$。
 
 ```java
 long[] dp = new long[capacity + 1];
@@ -1553,7 +1552,7 @@ for (int firstIndex = 0; firstIndex < first.length(); firstIndex++) {
 }
 ```
 
-計算量とメモリは $`O(N \cdot M)`$。
+計算量とメモリは $`O(NM)`$。
 
 ## メモ化再帰
 
@@ -1583,7 +1582,7 @@ static long search(int state, long[] memo) {
 
 ## bit 全探索
 
-$`N \le 20`$ 程度で、各要素を選ぶか選ばないか調べる場合に使う。計算量は $`O(N \cdot 2^N)`$。
+$`N \le 20`$ 程度で、各要素を選ぶか選ばないか調べる場合に使う。計算量は $`O(N2^N)`$。
 
 ### 考え方
 
