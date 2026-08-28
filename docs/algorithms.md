@@ -68,14 +68,14 @@
 
 最初に入力サイズから許容される計算量を見積もる。
 
-|      入力サイズの目安 | 検討できる計算量           |
-| --------------------: | -------------------------- |
-|            $N \le 20$ | $O(2^N)$、$O(N \cdot 2^N)$ |
-|           $N \le 500$ | $O(N^3)$ を検討            |
-|       $N \le 5{,}000$ | $O(N^2)$ を検討            |
-| $N \le 2 \times 10^5$ | $O(N \log N)$、$O(N)$      |
-|          $N \le 10^6$ | ほぼ $O(N)$                |
-|  値だけが非常に大きい | $O(\log N)$ を検討         |
+|     入力サイズの目安 | 検討できる計算量   |
+| -------------------: | ------------------ |
+|               N ≤ 20 | O(2^N)、O(N × 2^N) |
+|              N ≤ 500 | O(N^3) を検討      |
+|            N ≤ 5,000 | O(N^2) を検討      |
+|         N ≤ 2 × 10^5 | O(N log N)、O(N)   |
+|             N ≤ 10^6 | ほぼ O(N)          |
+| 値だけが非常に大きい | O(log N) を検討    |
 
 これは厳密な基準ではない。定数倍、制限時間、言語、処理内容によって変わる。
 
@@ -96,7 +96,7 @@
 | 連続区間を伸縮して条件を満たす       | 尺取り法 / スライディングウィンドウ |
 | 値は大きいが種類数が少ない           | 座標圧縮                            |
 | 選択肢の結果を状態として再利用できる | 動的計画法                          |
-| $N \le 20$ 程度で全部分集合を調べる  | bit 全探索                          |
+| N ≤ 20 程度で全部分集合を調べる      | bit 全探索                          |
 | 局所的な最善選択が交換可能           | 貪欲法                              |
 
 # 基本的な処理
@@ -322,13 +322,13 @@ for (long value : values) {
 素因数分解で見ると、GCD は各素因数の指数の最小値、LCM は最大値を取る。この関係から次が成り立つ。
 
 $$
-|ab| = \gcd(a, b) \cdot \operatorname{lcm}(a, b)
+|ab| = \gcd(a, b) \cdot \mathrm{lcm}(a, b)
 $$
 
 よって次の式で求められる。
 
 $$
-\operatorname{lcm}(a, b)
+\mathrm{lcm}(a, b)
 = \left|\frac{a}{\gcd(a, b)} \cdot b\right|
 $$
 
@@ -395,7 +395,7 @@ $$
 
 ### 解決したい問題
 
-$\operatorname{base}^{\operatorname{exponent}} \bmod m$ を、指数が非常に大きい場合でも高速に求める。
+$\mathrm{base}^{\mathrm{exponent}} \bmod m$ を、指数が非常に大きい場合でも高速に求める。
 
 ### 考え方
 
@@ -404,14 +404,14 @@ $\operatorname{base}^{\operatorname{exponent}} \bmod m$ を、指数が非常に
 $$
 \begin{aligned}
 13 &= 8 + 4 + 1 \\
-\operatorname{base}^{13}
-  &= \operatorname{base}^{8}
-   \cdot \operatorname{base}^{4}
-   \cdot \operatorname{base}
+\mathrm{base}^{13}
+  &= \mathrm{base}^{8}
+   \cdot \mathrm{base}^{4}
+   \cdot \mathrm{base}
 \end{aligned}
 $$
 
-底を毎回二乗すると、$\operatorname{base}^{1}, \operatorname{base}^{2}, \operatorname{base}^{4}, \operatorname{base}^{8}, \ldots$ を順に作れる。指数の最下位ビットが1のときだけ、その底を答えへ掛ける。
+底を毎回二乗すると、$\mathrm{base}^{1}, \mathrm{base}^{2}, \mathrm{base}^{4}, \mathrm{base}^{8}, \ldots$ を順に作れる。指数の最下位ビットが1のときだけ、その底を答えへ掛ける。
 
 各反復で指数を半分にするため、指数回の掛け算ではなく $O(\log \mathrm{exponent})$ 回で済む。
 
@@ -428,11 +428,11 @@ long result = modPow(base, exponent, mod);
 処理途中でも、概念的には次の関係が保たれる。
 
 $$
-\operatorname{base}_{0}^{\operatorname{exponent}_{0}}
+\mathrm{base}_{0}^{\mathrm{exponent}_{0}}
 \equiv
-\operatorname{result}
+\mathrm{result}
 \cdot
-\operatorname{base}^{\operatorname{exponent}}
+\mathrm{base}^{\mathrm{exponent}}
 \pmod m
 $$
 
@@ -457,7 +457,7 @@ Java の整数除算 `/` は0方向へ切り捨てる。これは数学的な床
 
 $$
 \begin{aligned}
-\operatorname{trunc}(-5 / 2) &= -2 && \text{（0方向）} \\
+\mathrm{trunc}(-5 / 2) &= -2 && \text{（0方向）} \\
 \left\lfloor -5 / 2 \right\rfloor &= -3 && \text{（負の無限大方向）} \\
 \left\lceil -5 / 2 \right\rceil &= -2 && \text{（正の無限大方向）}
 \end{aligned}
@@ -1091,7 +1091,7 @@ long rangeSum = sums[right] - sums[left]; // [left, right)
 `sums[i]` を先頭から `i` 個分の和と定義する。区間 `[left, right)` より前までの和 `sums[right]` から、不要な先頭部分 `sums[left]` を引けば、区間内だけが残る。
 
 $$
-\operatorname{sum}(\mathrm{left}, \mathrm{right})
+\mathrm{sum}(\mathrm{left}, \mathrm{right})
 = S_{\mathrm{right}} - S_{\mathrm{left}}
 $$
 
@@ -1116,7 +1116,7 @@ $$
 
 $$
 \begin{aligned}
-\operatorname{sum}(t, b, l, r)
+\mathrm{sum}(t, b, l, r)
   &= S_{b,r} - S_{t,r} \\
   &\quad - S_{b,l} + S_{t,l}
 \end{aligned}
@@ -1438,14 +1438,14 @@ $N$ 個の選択を $N$ bit の整数へ対応させる。bit $i$ が1なら要�
 
 $N = 3$ の場合、各整数と部分集合は次のように対応する。
 
-| bit 列   | 対応する部分集合          |
-| -------- | ------------------------- |
-| $000_2$  | $\varnothing$             |
-| $001_2$  | $\lbrace 0 \rbrace$       |
-| $010_2$  | $\lbrace 1 \rbrace$       |
-| $011_2$  | $\lbrace 0, 1 \rbrace$    |
-| $\vdots$ | $\vdots$                  |
-| $111_2$  | $\lbrace 0, 1, 2 \rbrace$ |
+| bit 列 | 対応する部分集合 |
+| ------ | ---------------- |
+| 000₂   | ∅                |
+| 001₂   | {0}              |
+| 010₂   | {1}              |
+| 011₂   | {0, 1}           |
+| ⋮      | ⋮                |
+| 111₂   | {0, 1, 2}        |
 
 集合という複雑な対象を整数の bit 表現に変換することで、漏れや重複なく列挙できる。
 
@@ -1571,9 +1571,9 @@ for (Interval interval : intervals) {
 木を根付き木として見ると、ある頂点の部分木サイズは「自分自身の1」と「各子の部分木サイズ」の和になる。子の答えが確定してから親へ足す必要があるため、DFS の帰りがけ、つまり後行順で集計する。
 
 $$
-\operatorname{subtreeSize}(v)
-= 1 + \sum_{u \in \operatorname{children}(v)}
-\operatorname{subtreeSize}(u)
+\mathrm{subtreeSize}(v)
+= 1 + \sum_{u \in \mathrm{children}(v)}
+\mathrm{subtreeSize}(u)
 $$
 
 辺には向きがないため、呼び出し元の親へ戻らないよう `parent` を渡す。
@@ -1678,21 +1678,21 @@ Java では深い DFS が `StackOverflowError` になりやすい。入力が直
 
 テンプレートに実装されているアルゴリズムと、この資料で扱う意味・計算量の対応である。
 
-| テンプレート要素 | 解決する問題                   | 計算量                      |
-| ---------------- | ------------------------------ | --------------------------- |
-| `DR` / `DC`      | グリッド上の上下左右移動       | 1方向あたり $O(1)$          |
-| `isInside`       | 座標がグリッド内か判定         | $O(1)$                      |
-| `ceilDiv`        | 符号を含む数学的な切り上げ除算 | $O(1)$                      |
-| `floorDiv`       | 符号を含む数学的な切り下げ除算 | $O(1)$                      |
-| `isPrime`        | 1つの整数の素数判定            | $O(\sqrt{N})$               |
-| `sieve`          | $N$ 以下の素数を一括判定       | $O(N \log\log N)$           |
-| `gcd`            | 最大公約数                     | $O(\log \min(A, B))$        |
-| `lcm`            | 最小公倍数                     | $O(\log \min(A, B))$        |
-| `modPow`         | べき乗剰余                     | $O(\log \mathrm{exponent})$ |
-| `lowerBound`     | `target` 以上の最初の位置      | $O(\log N)$                 |
-| `upperBound`     | `target` より大きい最初の位置  | $O(\log N)$                 |
-| `prefixSums`     | 静的な区間和の前計算           | 構築 $O(N)$、取得 $O(1)$    |
-| `divisors`       | 正の約数列挙                   | $O(\sqrt{N} + D \log D)$    |
+| テンプレート要素 | 解決する問題                   | 計算量               |
+| ---------------- | ------------------------------ | -------------------- |
+| `DR` / `DC`      | グリッド上の上下左右移動       | 1方向あたり O(1)     |
+| `isInside`       | 座標がグリッド内か判定         | O(1)                 |
+| `ceilDiv`        | 符号を含む数学的な切り上げ除算 | O(1)                 |
+| `floorDiv`       | 符号を含む数学的な切り下げ除算 | O(1)                 |
+| `isPrime`        | 1つの整数の素数判定            | O(√N)                |
+| `sieve`          | N 以下の素数を一括判定         | O(N log log N)       |
+| `gcd`            | 最大公約数                     | O(log min(A, B))     |
+| `lcm`            | 最小公倍数                     | O(log min(A, B))     |
+| `modPow`         | べき乗剰余                     | O(log exponent)      |
+| `lowerBound`     | `target` 以上の最初の位置      | O(log N)             |
+| `upperBound`     | `target` より大きい最初の位置  | O(log N)             |
+| `prefixSums`     | 静的な区間和の前計算           | 構築 O(N)、取得 O(1) |
+| `divisors`       | 正の約数列挙                   | O(√N + D log D)      |
 
 入力、出力、配列表示などの Java API とテンプレート操作は [`java-cheatsheet.md`](java-cheatsheet.md) の責務とし、この索引には問題解決アルゴリズムだけを掲載する。
 

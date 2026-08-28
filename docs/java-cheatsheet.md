@@ -134,21 +134,21 @@ map.computeIfAbsent(key, ignored -> new ArrayList<>()).add(value);
 
 ### `HashSet`、`LinkedHashSet`、`TreeSet`
 
-| 型              | 順序     | 基本操作    |
-| --------------- | -------- | ----------- |
-| `HashSet`       | 保証なし | 平均 $O(1)$ |
-| `LinkedHashSet` | 挿入順   | 平均 $O(1)$ |
-| `TreeSet`       | ソート順 | $O(\log N)$  |
+| 型              | 順序     | 基本操作  |
+| --------------- | -------- | --------- |
+| `HashSet`       | 保証なし | 平均 O(1) |
+| `LinkedHashSet` | 挿入順   | 平均 O(1) |
+| `TreeSet`       | ソート順 | O(log N)  |
 
 大小関係や `floor`、`ceiling` が必要なら `TreeSet`、順序が不要なら `HashSet` を基本とする。
 
 ### `HashMap`、`LinkedHashMap`、`TreeMap`
 
-| 型              | キーの順序 | 基本操作    |
-| --------------- | ---------- | ----------- |
-| `HashMap`       | 保証なし   | 平均 $O(1)$ |
-| `LinkedHashMap` | 挿入順     | 平均 $O(1)$ |
-| `TreeMap`       | ソート順   | $O(\log N)$  |
+| 型              | キーの順序 | 基本操作  |
+| --------------- | ---------- | --------- |
+| `HashMap`       | 保証なし   | 平均 O(1) |
+| `LinkedHashMap` | 挿入順     | 平均 O(1) |
+| `TreeMap`       | ソート順   | O(log N)  |
 
 キー順の走査や境界検索が必要なら `TreeMap` を使う。
 
