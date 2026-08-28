@@ -20,6 +20,7 @@
   - [最大公約数（GCD）](#最大公約数gcd)
   - [最小公倍数（LCM）](#最小公倍数lcm)
   - [約数列挙](#約数列挙)
+  - [剰余演算](#剰余演算)
   - [繰り返し二乗法](#繰り返し二乗法)
   - [切り上げ除算と切り下げ除算](#切り上げ除算と切り下げ除算)
 - [グラフ探索](#グラフ探索)
@@ -390,6 +391,158 @@ List<Long> values = divisors(n);
 $$
 n = 36, \qquad d = 6, \qquad \frac{n}{d} = 6
 $$
+
+## 剰余演算
+
+### 解決したい問題
+
+非常に大きな整数の計算結果を、ある正整数 `mod` で割った余りとして求める。競技プログラミングでは、答えを $`10^9 + 7`$ や $`998244353`$ で割った余りとして出力する問題、周期を扱う問題、偶奇や末尾の桁だけが必要な問題で頻出する。
+
+### 考え方
+
+2つの整数 `a` と `b` を `mod` で割った余りが等しいとき、`a` と `b` は `mod` を法として合同であるという。
+
+$$
+a \equiv b \pmod {\mathrm{mod}}
+$$
+
+これは、差 $`a - b`$ が `mod` の倍数であることと同じである。
+
+$$
+\mathrm{mod} \mid (a - b)
+$$
+
+合同な値は「`mod` で割った余りだけを考える世界では同じ値」とみなせる。たとえば、法を7とすると、3、10、17はすべて合同である。
+
+$$
+3 \equiv 10 \equiv 17 \pmod 7
+$$
+
+この考え方により、巨大な値そのものを保持せず、同じ余りを持つ小さな値へ置き換えながら計算できる。
+
+### 加算・減算・乗算の法則
+
+合同式は加算、減算、乗算を保つ。
+
+$$
+\begin{aligned}
+(a + b) \bmod m
+  &= ((a \bmod m) + (b \bmod m)) \bmod m \\
+(a - b) \bmod m
+  &= ((a \bmod m) - (b \bmod m)) \bmod m \\
+(ab) \bmod m
+  &= ((a \bmod m)(b \bmod m)) \bmod m
+\end{aligned}
+$$
+
+より一般には、$`a \equiv a' \pmod m`$ かつ $`b \equiv b' \pmod m`$ なら、次が成り立つ。
+
+$$
+\begin{aligned}
+a + b &\equiv a' + b' \pmod m \\
+a - b &\equiv a' - b' \pmod m \\
+ab &\equiv a'b' \pmod m
+\end{aligned}
+$$
+
+したがって、和や積を繰り返す処理では毎回余りを取ってよい。
+
+```java
+long sum = 0;
+for (long value : values) {
+    sum = (sum + value) % mod;
+}
+```
+
+```java
+long product = 1;
+for (long value : values) {
+    product = product * (value % mod) % mod;
+}
+```
+
+途中で余りを取ると値の増大を抑えられる。ただし、`product * (value % mod)` の乗算を行った時点で `long` の範囲を超える場合は、余りを取る前にオーバーフローする。AtCoderでよく使われる $`10^9 + 7`$ や $`998244353`$ 未満の2数の積は `long` に収まるが、法がそれより大きい場合は制約を確認する。
+
+### 負数の正規化
+
+数学では、法 `mod` に対する代表値として通常 $`0`$ 以上 $`\mathrm{mod} - 1`$ 以下を使う。一方、Javaの `%` は剰余演算子であり、左辺が負なら結果も負になり得る。
+
+```java
+System.out.println(-3 % 5); // -3
+```
+
+減算結果などを非負の範囲へ正規化するには `Math.floorMod` を使う。
+
+```java
+long normalized = Math.floorMod(value, mod);
+long difference = Math.floorMod(a - b, mod);
+```
+
+値がすでに $`0 \le a, b < \mathrm{mod}`$ の範囲にあると分かっている場合は、次の形も使える。
+
+```java
+long difference = (a - b + mod) % mod;
+```
+
+`a` や `b` が任意の `long` なら、`a - b` や `a - b + mod` 自体のオーバーフローに注意する。
+
+### 除算はそのまま適用できない
+
+加算・減算・乗算と異なり、合同式の両辺を任意の値で割ることはできない。たとえば、法6では次が成り立つ。
+
+$$
+2 \cdot 1 \equiv 2 \cdot 4 \pmod 6
+$$
+
+しかし、両辺を2で割った次の式は成り立たない。
+
+$$
+1 \not\equiv 4 \pmod 6
+$$
+
+法 `mod` のもとで `a` による除算を行うには、次を満たす **逆元** $`a^{-1}`$ を掛ける。
+
+$$
+a \cdot a^{-1} \equiv 1 \pmod {\mathrm{mod}}
+$$
+
+逆元が存在する条件は次のとおりである。
+
+$$
+\gcd(a, \mathrm{mod}) = 1
+$$
+
+`mod` が素数で、`a` が `mod` の倍数でなければ、フェルマーの小定理から逆元を求められる。
+
+$$
+a^{-1} \equiv a^{\mathrm{mod} - 2} \pmod {\mathrm{mod}}
+$$
+
+`template/Main.java` の `modPow` を使う場合:
+
+```java
+long inverse = modPow(a, mod - 2, mod);
+long quotient = numerator % mod * inverse % mod;
+```
+
+この方法は法が合成数の場合には一般に使えない。法が素数か、除数と法が互いに素かを必ず確認する。
+
+### よく使う場面
+
+- 数え上げの答えを指定された法で出力する
+- DPの遷移ごとに余りを取り、値の増大を防ぐ
+- 巨大なべき乗の下位桁や余りを求める
+- 周期的な状態を `index % cycleLength` で表す
+- 偶奇を `value % 2` で判定する
+- 時計や環状配列の位置を `Math.floorMod(index, length)` で循環させる
+
+### 注意点
+
+- 法 `mod` は正であることを前提にする
+- Javaの `%` と数学的な非負の剰余は、負数に対する結果が異なる
+- 加減乗では途中で余りを取れるが、通常の除算には同じ法則を適用できない
+- 掛け算の前に、使用する整数型の範囲を確認する
+- 最終出力だけでなく、DPや数え上げの各更新でも余りを取る
 
 ## 繰り返し二乗法
 
