@@ -2,7 +2,7 @@
 
 AtCoder に Java で参加するための Dev Container 対応開発環境である。
 
-Dev Container に対応したエディタでプロジェクトを開くと、Java、atcoder-cli、online-judge-tools など、競技プログラミングに必要なツールをコンテナ内で利用できる。ホスト環境へ個別にツールをインストールする必要はない。
+Dev Container に対応したエディタでプロジェクトを開くと、Java、atcoder-cli、online-judge-tools など、競技プログラミングに必要なツールをコンテナ内で利用できる。
 
 ## 必要なもの
 
@@ -156,7 +156,7 @@ Dev Container の新規作成時にも `postCreateCommand` から自動同期さ
 
 [`docs/java-cheatsheet.md`](docs/java-cheatsheet.md) に、競技中に名前や使い方を忘れやすい Java 21 の標準 API とデータ型をまとめている。
 
-対象は配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、短い定番処理などである。`template/Main.java` に実装済みのアルゴリズムは重複して含めない。
+対象は配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、短い定番処理などである。
 
 ## 参考リンク
 
