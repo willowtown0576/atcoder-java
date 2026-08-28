@@ -341,12 +341,71 @@ String text = Arrays.toString(values);
 String deepText = Arrays.deepToString(grid);
 ```
 
+### 配列の出力と `char[]` の特別扱い
+
+`PrintWriter` の `print` / `println` には `char[]` 専用のオーバーロードがある。`char[]` を直接渡すと、各文字が区切りなしで連続して出力される。
+
+```java
+char[] characters = {'a', 'b', 'c'};
+out.println(characters);             // abc
+out.println(new String(characters)); // abc（明示的に文字列へ変換）
+out.println(Arrays.toString(characters)); // [a, b, c]
+```
+
+例えば `List<char[]>` から取り出した値も、コンパイル時の型が `char[]` なので同じ専用オーバーロードが選ばれる。
+
+```java
+List<char[]> permutations = List.of(new char[] {'a', 'b', 'c'});
+out.println(permutations.get(0)); // abc
+```
+
+`char[]` 以外の配列には、配列全体を内容どおりに出力する専用オーバーロードがない。直接渡すと `println(Object)` が選ばれ、型名とハッシュ値のような文字列が出力される。
+
+```java
+int[] values = {1, 2, 3};
+out.println(values);                  // [I@... のような表示
+out.println(Arrays.toString(values)); // [1, 2, 3]
+```
+
+| 目的                                | 書き方                                   | 出力例             |
+| ----------------------------------- | ---------------------------------------- | ------------------ |
+| `char[]` を連結した文字列として出力 | `out.println(characters)`                | `abc`              |
+| `char[]` を明示的に `String` 化     | `out.println(new String(characters))`    | `abc`              |
+| 1次元配列の内容を確認               | `out.println(Arrays.toString(values))`   | `[1, 2, 3]`        |
+| 多次元配列の内容を確認              | `out.println(Arrays.deepToString(grid))` | `[[1, 2], [3, 4]]` |
+| 配列要素を空白区切りで出力          | テンプレートの `printArray(values)`      | `1 2 3`            |
+
+`char[][]` は `char[]` ではないため、直接渡しても各行の文字は連結されない。行ごとに出力する。
+
+```java
+for (char[] row : characterGrid) {
+    out.println(row);
+}
+```
+
 ### ソート・検索
 
 ```java
 Arrays.sort(values);
 Arrays.sort(objects, comparator);
 int index = Arrays.binarySearch(values, key);
+```
+
+範囲を指定する場合は半開区間 `[fromIndex, toIndex)` になる。`fromIndex` は含み、`toIndex` は含まない。
+
+```java
+Arrays.sort(values, fromIndex, toIndex);
+```
+
+`int[]` の指定範囲を降順にする場合は、昇順ソートしてから範囲内を反転する。
+
+```java
+Arrays.sort(values, fromIndex, toIndex);
+for (int left = fromIndex, right = toIndex - 1; left < right; left++, right--) {
+    int temporary = values[left];
+    values[left] = values[right];
+    values[right] = temporary;
+}
 ```
 
 `Arrays.binarySearch` は、値が存在する場合はそのインデックスを返す。存在しない場合は `-(挿入位置) - 1` を返す。

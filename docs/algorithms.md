@@ -9,58 +9,59 @@
 - [アルゴリズムを選ぶ前に](#アルゴリズムを選ぶ前に)
 - [早見表](#早見表)
 - [基本的な処理](#基本的な処理)
-  - [各桁の数字の和](#各桁の数字の和)
-  - [10進数の桁数](#10進数の桁数)
-  - [回文判定](#回文判定)
-  - [英小文字の出現回数](#英小文字の出現回数)
-  - [プリミティブ配列を降順にする](#プリミティブ配列を降順にする)
+    - [各桁の数字の和](#各桁の数字の和)
+    - [10進数の桁数](#10進数の桁数)
+    - [回文判定](#回文判定)
+    - [英小文字の出現回数](#英小文字の出現回数)
+    - [プリミティブ配列を降順にする](#プリミティブ配列を降順にする)
 - [数論](#数論)
-  - [素数判定](#素数判定)
-  - [エラトステネスの篩](#エラトステネスの篩)
-  - [最大公約数（GCD）](#最大公約数gcd)
-  - [最小公倍数（LCM）](#最小公倍数lcm)
-  - [約数列挙](#約数列挙)
-  - [剰余演算](#剰余演算)
-  - [繰り返し二乗法](#繰り返し二乗法)
-  - [切り上げ除算と切り下げ除算](#切り上げ除算と切り下げ除算)
+    - [素数判定](#素数判定)
+    - [エラトステネスの篩](#エラトステネスの篩)
+    - [最大公約数（GCD）](#最大公約数gcd)
+    - [最小公倍数（LCM）](#最小公倍数lcm)
+    - [約数列挙](#約数列挙)
+    - [剰余演算](#剰余演算)
+    - [繰り返し二乗法](#繰り返し二乗法)
+    - [切り上げ除算と切り下げ除算](#切り上げ除算と切り下げ除算)
 - [グラフ探索](#グラフ探索)
-  - [グラフの表現](#グラフの表現)
-  - [幅優先探索（BFS）](#幅優先探索bfs)
-  - [グリッド上の BFS](#グリッド上の-bfs)
-  - [深さ優先探索（DFS）](#深さ優先探索dfs)
-  - [BFS と DFS の選択](#bfs-と-dfs-の選択)
+    - [グラフの表現](#グラフの表現)
+    - [幅優先探索（BFS）](#幅優先探索bfs)
+    - [グリッド上の BFS](#グリッド上の-bfs)
+    - [深さ優先探索（DFS）](#深さ優先探索dfs)
+    - [BFS と DFS の選択](#bfs-と-dfs-の選択)
 - [Union-Find](#union-find)
 - [最短経路](#最短経路)
-  - [Dijkstra 法](#dijkstra-法)
-  - [0-1 BFS](#0-1-bfs)
+    - [Dijkstra 法](#dijkstra-法)
+    - [0-1 BFS](#0-1-bfs)
 - [DAG](#dag)
-  - [トポロジカルソート](#トポロジカルソート)
+    - [トポロジカルソート](#トポロジカルソート)
 - [探索と境界](#探索と境界)
-  - [二分探索](#二分探索)
-  - [答えで二分探索](#答えで二分探索)
+    - [二分探索](#二分探索)
+    - [答えで二分探索](#答えで二分探索)
 - [区間処理](#区間処理)
-  - [累積和](#累積和)
-  - [二次元累積和](#二次元累積和)
-  - [いもす法](#いもす法)
+    - [累積和](#累積和)
+    - [二次元累積和](#二次元累積和)
+    - [いもす法](#いもす法)
 - [連続区間](#連続区間)
-  - [尺取り法](#尺取り法)
-  - [固定長スライディングウィンドウ](#固定長スライディングウィンドウ)
+    - [尺取り法](#尺取り法)
+    - [固定長スライディングウィンドウ](#固定長スライディングウィンドウ)
 - [座標圧縮](#座標圧縮)
 - [動的計画法（DP）](#動的計画法dp)
-  - [1次元 DP](#1次元-dp)
-  - [0/1 ナップサック](#01-ナップサック)
-  - [部分和 DP](#部分和-dp)
-  - [2次元 DP](#2次元-dp)
-  - [メモ化再帰](#メモ化再帰)
+    - [1次元 DP](#1次元-dp)
+    - [0/1 ナップサック](#01-ナップサック)
+    - [部分和 DP](#部分和-dp)
+    - [2次元 DP](#2次元-dp)
+    - [メモ化再帰](#メモ化再帰)
 - [全探索](#全探索)
-  - [bit 全探索](#bit-全探索)
-  - [順列全探索](#順列全探索)
+    - [bit 全探索](#bit-全探索)
+    - [順列全探索](#順列全探索)
+    - [組み合わせ全探索](#組み合わせ全探索)
 - [貪欲法](#貪欲法)
-  - [区間スケジューリング](#例-区間スケジューリング)
+    - [区間スケジューリング](#例-区間スケジューリング)
 - [木](#木)
-  - [木の基本性質](#木の基本性質)
-  - [部分木サイズ](#部分木サイズ)
-  - [木の直径](#木の直径)
+    - [木の基本性質](#木の基本性質)
+    - [部分木サイズ](#部分木サイズ)
+    - [木の直径](#木の直径)
 - [よくある失敗](#よくある失敗)
 - [`template/Main.java` アルゴリズム索引](#templatemainjava-アルゴリズム索引)
 - [追加を検討するアルゴリズム](#追加を検討するアルゴリズム)
@@ -1627,33 +1628,119 @@ for (long subset = mask; subset > 0; subset = (subset - 1) & mask) {
 
 ## 順列全探索
 
-`N!` 通りを調べるため、通常は $`N \le 8`$ 程度で検討する。
+### 解決したい問題
 
-Java 標準 API に next permutation はない。DFS で順列を構築する例:
+配列の要素を並べ替えて作れるすべての順列を調べる。要素がすべて異なる場合、長さ $`N`$ の配列には $`N!`$ 通りの順列があるため、通常は $`N \le 8`$ 程度で検討する。
+
+順列では並び順を区別する。例えば `[1, 2]` と `[2, 1]` は異なる順列である。
+
+### 実装
+
+Java 標準 API に next permutation はない。`template/Main.java` の `permutations(int[])` または `permutations(char[])` を使う。
 
 ```java
-static void enumeratePermutations(
+List<int[]> results = permutations(new int[] {1, 2, 3});
+for (int[] permutation : results) {
+    // permutationを評価する
+}
+```
+
+文字配列の場合:
+
+```java
+List<char[]> results = permutations(new char[] {'a', 'b', 'c'});
+for (char[] permutation : results) {
+    String text = new String(permutation);
+    // textを評価する
+}
+```
+
+テンプレート関数は入力配列を変更せず、相異なる順列を辞書順で返す。重複要素を含む場合、同じ値の並びは一度だけ生成する。
+
+```java
+permutations(new int[] {1, 1, 2});
+// [1, 1, 2], [1, 2, 1], [2, 1, 1]
+```
+
+内部では最初に配列を昇順ソートし、現在の順列から辞書順で次の順列を繰り返し生成する。
+
+### 計算量
+
+配列長を $`N`$、相異なる順列数を $`P`$ とすると、時間計算量は $`O(N \log N + NP)`$、返却する順列を含む空間計算量は $`O(NP)`$。
+
+順列を保存せず、生成するたびに評価する実装なら追加メモリを削減できる。
+
+## 組み合わせ全探索
+
+### 解決したい問題
+
+$`N`$ 個の要素から、並び順を区別せずに $`K`$ 個を選ぶすべての組み合わせを調べる。組み合わせ数は $`\binom{N}{K}`$ である。
+
+例えば `[1, 2]` と `[2, 1]` は順列では異なるが、組み合わせでは同じ選び方として扱う。
+
+### 実装
+
+`template/Main.java` の `combinations(int, int)` を使う。選ぶインデックスを常に昇順にすると、同じ組み合わせを重複して生成しない。
+
+```java
+static List<int[]> combinations(int n, int k) {
+    if (k < 0 || k > n) {
+        return List.of();
+    }
+
+    List<int[]> results = new ArrayList<>();
+    enumerateCombinations(0, 0, n, new int[k], results);
+    return results;
+}
+
+static void enumerateCombinations(
+    int start,
     int depth,
-    int[] permutation,
-    boolean[] used
+    int n,
+    int[] current,
+    List<int[]> results
 ) {
-    if (depth == permutation.length) {
-        // permutationを評価する
+    if (depth == current.length) {
+        results.add(current.clone());
         return;
     }
 
-    for (int value = 0; value < permutation.length; value++) {
-        if (used[value]) {
-            continue;
-        }
-
-        used[value] = true;
-        permutation[depth] = value;
-        enumeratePermutations(depth + 1, permutation, used);
-        used[value] = false;
+    int remaining = current.length - depth;
+    for (int index = start; index <= n - remaining; index++) {
+        current[depth] = index;
+        enumerateCombinations(index + 1, depth + 1, n, current, results);
     }
 }
 ```
+
+使用例:
+
+```java
+int[] values = {10, 20, 30, 40};
+for (int[] indices : combinations(values.length, 2)) {
+    int first = values[indices[0]];
+    int second = values[indices[1]];
+    // (10, 20), (10, 30), (10, 40), (20, 30), (20, 40), (30, 40)
+}
+```
+
+この実装は値ではなくインデックスを選ぶ。同じ値が異なるインデックスにある場合、それぞれを別の要素として扱う。
+
+`char[]` から文字を直接選ぶ場合は、テンプレートの `combinations(char[], int)` を使う。入力配列は変更せず、値として同一の組み合わせを除外して辞書順で返す。
+
+```java
+List<char[]> results = combinations(new char[] {'a', 'a', 'b', 'c'}, 2);
+for (char[] combination : results) {
+    out.println(new String(combination));
+}
+// aa, ab, ac, bc
+```
+
+### 計算量
+
+生成する組み合わせ数を $`C = \binom{N}{K}`$ とすると、各結果のコピーを含む時間・空間計算量は $`O(KC)`$。
+
+$`N`$ が小さく、選ぶ個数が固定されていない場合は、すべての部分集合を生成できる [bit 全探索](#bit-全探索) も候補になる。
 
 # 貪欲法
 
@@ -1845,6 +1932,8 @@ Java では深い DFS が `StackOverflowError` になりやすい。入力が直
 | `upperBound`     | `target` より大きい最初の位置  | O(log N)             |
 | `prefixSums`     | 静的な区間和の前計算           | 構築 O(N)、取得 O(1) |
 | `divisors`       | 正の約数列挙                   | O(√N + D log D)      |
+| `permutations`   | 配列の相異なる順列を全列挙     | O(N log N + NP)      |
+| `combinations`   | N 個から K 個を選ぶ組合せ列挙  | O(K × C(N, K))       |
 
 入力、出力、配列表示などの Java API とテンプレート操作は [`java-cheatsheet.md`](java-cheatsheet.md) の責務とし、この索引には問題解決アルゴリズムだけを掲載する。
 
