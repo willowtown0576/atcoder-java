@@ -12,7 +12,12 @@
 /*/
 !/.devcontainer/
 !/docs/
+!/scripts/
 !/template/
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
 
 # Editor temporary files
 *.swp
