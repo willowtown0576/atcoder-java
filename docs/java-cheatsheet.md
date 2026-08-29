@@ -1,6 +1,6 @@
 # Java 21 Cheat Sheet for AtCoder
 
-Java 21 の構文、型、標準 API、変換方法をすぐに確認するための早見表である。問題を解くためのアルゴリズムは `algorithms.md` に分離する。
+Java 21 の構文、型、標準 API、変換方法をすぐに確認するための早見表である。アルゴリズムの選び方や実装例は [`algorithms.md`](algorithms.md) から確認できる。
 
 ## 目次
 
@@ -835,7 +835,7 @@ int required = result.orElseThrow();
 
 ## Java API の実用パターン
 
-標準 API の組み合わせや、Java 固有の変換方法をまとめる。問題を解くためのアルゴリズムは [`algorithms.md`](algorithms.md) に記載する。
+競技プログラミングでよく使う標準 API の組み合わせや、Java 固有の変換方法をまとめる。
 
 ### 文字列の各桁を配列に変換する
 

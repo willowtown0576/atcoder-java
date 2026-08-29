@@ -13,6 +13,7 @@
 !/.devcontainer/
 !/docs/
 !/scripts/
+!/snippets/
 !/template/
 
 # Python build artifacts

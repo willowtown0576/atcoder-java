@@ -145,7 +145,7 @@ atcoder-java/
 
 ## Java テンプレート
 
-Java テンプレートは Dockerfile ではなく、プロジェクト内の `template/` で管理する。
+Java テンプレートはプロジェクト内の `template/` で管理する。
 
 - `template/Main.java`: `acc new` で生成する Java コード
 - `template/template.json`: atcoder-cli のテンプレート設定
