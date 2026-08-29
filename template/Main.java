@@ -55,11 +55,7 @@ public class Main {
      * 問題に応じてこのメソッドの内容を書き換えて使用する。
      */
     private static void solve() {
-        int n = fs.nextInt();
-        char[] chars = fs.nextCharArray(n);
-
-        String answer = new String(chars);
-        out.println(answer);
+        out.println("Hello, World!");
     }
 
     /**
