@@ -265,6 +265,8 @@ long product = (long) a * b;
 
 ## 数値変換
 
+### 文字列と数値
+
 ```java
 int intValue = Integer.parseInt("123");
 long longValue = Long.parseLong("123");
@@ -272,20 +274,60 @@ double doubleValue = Double.parseDouble("1.25");
 
 String intText = Integer.toString(123);
 String longText = Long.toString(123L);
-String binary = Integer.toBinaryString(10);   // "1010"
-String hex = Integer.toHexString(255);        // "ff"
-
-int digit = Character.digit('7', 10);         // 7
-char digitChar = Character.forDigit(7, 10);   // '7'
+String doubleText = Double.toString(1.25);
 ```
+
+整数として解釈できない文字列や、対象の型の範囲を超える値を渡すと `NumberFormatException` になる。
 
 基数を指定した変換:
 
 ```java
-int binaryValue = Integer.parseInt("1010", 2);
-long hexValue = Long.parseLong("ff", 16);
-String base3 = Integer.toString(10, 3);
+int binaryValue = Integer.parseInt("1010", 2); // 10
+long hexValue = Long.parseLong("ff", 16);       // 255
+String binary = Integer.toBinaryString(10);     // "1010"
+String hex = Integer.toHexString(255);           // "ff"
+String base3 = Integer.toString(10, 3);          // "101"
 ```
+
+### 整数型・浮動小数点型の変換
+
+値の範囲が広がる変換は暗黙に行われる。
+
+```java
+int intValue = 123;
+long longValue = intValue;
+double doubleValue = longValue;
+```
+
+値の範囲が狭まる変換にはキャストが必要となる。
+
+```java
+long longValue = 123L;
+int intValue = (int) longValue;
+
+double doubleValue = 12.9;
+int truncated = (int) doubleValue; // 12。小数部分は0方向へ切り捨て
+```
+
+キャスト先の範囲を超えても例外は発生せず、上位ビットが失われる。`long` から `int` への変換で範囲超過を検出する場合は `Math.toIntExact` を使う。
+
+```java
+int exact = Math.toIntExact(longValue); // 範囲外ならArithmeticException
+```
+
+`long` から `double` への変換は値の範囲を扱えるが、大きな整数では精度が失われる可能性がある。
+
+### 数字と文字
+
+```java
+int digit = '7' - '0';                  // 7
+char digitCharacter = (char) ('0' + 7); // '7'
+
+int radixDigit = Character.digit('f', 16);      // 15
+char radixCharacter = Character.forDigit(15, 16); // 'f'
+```
+
+`character - '0'` は文字が `'0'` 以上 `'9'` 以下と分かっている場合に使う。`Character.digit` は指定した基数の数字として解釈できない場合に `-1` を返す。
 
 ## `Math`
 
@@ -772,6 +814,15 @@ char lowerCharacter = Character.toLowerCase(character);
 int numericValue = Character.getNumericValue(character);
 ```
 
+### 半角英字（`A-Z`、`a-z`）か判定する
+
+```java
+boolean isAsciiLetter = ('A' <= character && character <= 'Z')
+        || ('a' <= character && character <= 'z');
+```
+
+`Character.isLetter(character)` は、ひらがなや漢字などの Unicode 文字にも `true` を返す。半角英字だけに限定する場合は、上記のように文字の範囲を直接比較する。
+
 ## ビット演算
 
 ```java
@@ -892,6 +943,47 @@ for (int digit : digits) {
 ```
 
 この処理は各要素が `0` 以上 `9` 以下であることを前提とする。空配列の変換結果は `0` となる。
+
+### 空白区切り文字列を数値配列に変換する
+
+```java
+String text = "10 20 30";
+int[] values = Arrays.stream(text.strip().split("\\s+"))
+    .mapToInt(Integer::parseInt)
+    .toArray();
+```
+
+`strip()` 後の文字列が空の場合、`split` が返す空文字列を数値へ変換できず `NumberFormatException` になる。空入力の可能性がある場合は先に判定する。
+
+```java
+int[] values = text.isBlank()
+    ? new int[0]
+    : Arrays.stream(text.strip().split("\\s+"))
+        .mapToInt(Integer::parseInt)
+        .toArray();
+```
+
+大量の入力は、文字列全体を分割せず `FastScanner` から直接読み取る。
+
+### `int[]` と `long[]` を変換する
+
+```java
+int[] intValues = {1, 2, 3};
+long[] longValues = Arrays.stream(intValues)
+    .asLongStream()
+    .toArray();
+```
+
+`long[]` から `int[]` へ安全に変換する場合:
+
+```java
+long[] longValues = {1L, 2L, 3L};
+int[] intValues = Arrays.stream(longValues)
+    .mapToInt(Math::toIntExact)
+    .toArray();
+```
+
+`(int) value` を使うと範囲外の値が切り詰められる。`Math.toIntExact` は範囲外の値で `ArithmeticException` を投げる。
 
 ### `StringBuilder` で文字列を逆順にする
 
