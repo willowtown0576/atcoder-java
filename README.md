@@ -37,6 +37,8 @@ git clone https://github.com/willowtown0576/atcoder-java.git
 2. エディタの Dev Container メニューまたはコマンドパレットから、コンテナで開く操作を選択する。
 3. 初回は開発用イメージが自動的にビルドされる。ビルド完了後、ワークスペースがコンテナ内の `/workspace` として開かれる。
 
+既存の Dev Container を更新する場合は、エディタからコンテナを再ビルドする。
+
 以降、この README に記載するコマンドは、特記がない限り**エディタ上のコンテナ内ターミナル**で実行する。
 
 ## AtCoder へのログイン
@@ -115,12 +117,14 @@ make help
 
 | ツール             | バージョン・用途                    |
 | ------------------ | ----------------------------------- |
-| Java               | Eclipse Temurin OpenJDK 21 LTS      |
-| Python             | 3.10（online-judge-tools、aclogin） |
+| Java               | Eclipse Temurin OpenJDK 24.0.2      |
+| Python             | 3.12（online-judge-tools、aclogin） |
 | Node.js            | 18.x（atcoder-cli）                 |
 | atcoder-cli        | 問題のダウンロード・提出            |
 | online-judge-tools | サンプルテストの実行                |
 | GNU Make           | テスト・提出コマンドの統一          |
+
+Java のバージョンは AtCoder のジャッジ環境である Java24（OpenJDK 24.0.2）に合わせている。[AtCoder 公式の言語・ライブラリ一覧](https://img.atcoder.jp/file/language-update/2025-10/language-list.html)
 
 ## プロジェクト構成
 
@@ -128,7 +132,7 @@ make help
 atcoder-java/
 ├── .devcontainer/
 │   └── devcontainer.json  # Dev Container 設定
-├── Dockerfile             # Java 21 開発イメージ
+├── Dockerfile             # Java 24 開発イメージ
 ├── docker-compose.yml     # コンテナと永続ボリュームの設定
 ├── Makefile               # テスト・提出・同期・クリーンコマンド
 ├── docs/
@@ -168,7 +172,7 @@ Dev Container の新規作成時にも `postCreateCommand` から自動同期さ
 
 ## Java 早見表
 
-[`docs/java-cheatsheet.md`](docs/java-cheatsheet.md) に、競技中に名前や使い方を忘れやすい Java 21 の標準 API とデータ型をまとめている。
+[`docs/java-cheatsheet.md`](docs/java-cheatsheet.md) に、競技中に名前や使い方を忘れやすい Java 24 の標準 API とデータ型をまとめている。
 
 対象は基本構文、型変換、配列、文字列、コレクション、キュー、優先度付きキュー、比較処理、`record`、`BigInteger`、`BitSet`、ビット演算、Stream API などである。
 
