@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:24.0.2_12-jdk-noble
 
 # 環境変数設定
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,11 +18,12 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-# Python 3.10のインストール (競技プログラミング用最小構成)
+# Python 3.12と仮想環境のセットアップ
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/* \
+    && python3 -m venv /opt/atcoder-venv
+ENV PATH="/opt/atcoder-venv/bin:${PATH}"
 
 # Node.js 18.xのインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -35,11 +36,9 @@ WORKDIR /workspace
 # atcoder-cliのインストール
 RUN npm install -g atcoder-cli
 
-# online-judge-toolsのインストール
-RUN pip3 install online-judge-tools
-
-# acloginのインストール
-RUN pip3 install aclogin
+# online-judge-toolsとacloginのインストール
+# online-judge-tools が使う distutils を setuptools で補う
+RUN python -m pip install setuptools online-judge-tools aclogin
 
 # 必要なディレクトリを作成
 RUN mkdir -p /root/.config/atcoder-cli-nodejs

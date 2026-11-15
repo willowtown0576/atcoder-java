@@ -1,6 +1,6 @@
-# Java 21 Cheat Sheet for AtCoder
+# Java 24 Cheat Sheet for AtCoder
 
-Java 21 の構文、型、標準 API、変換方法をすぐに確認するための早見表である。アルゴリズムの選び方や実装例は [`algorithms.md`](algorithms.md) から確認できる。
+Java 24 の構文、型、標準 API、変換方法をすぐに確認するための早見表である。アルゴリズムの選び方や実装例は [`algorithms.md`](algorithms.md) から確認できる。
 
 ## 目次
 
@@ -45,7 +45,7 @@ text.trim(); // EM SPACEは残る
 text.strip(); // "Hello"
 ```
 
-Java 21 では、Unicode 空白を扱える `strip()` を基本とする。先頭だけなら `stripLeading()`、末尾だけなら `stripTrailing()` を使う。
+Unicode 空白を扱う場合は `strip()` を基本とする。先頭だけなら `stripLeading()`、末尾だけなら `stripTrailing()` を使う。
 
 ### `isEmpty` と `isBlank`
 
