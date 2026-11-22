@@ -7,7 +7,7 @@ KB/MB は従来の1000進、KiB/MiB は1024進でバイト数に変換する。
 Docker ビルド時に実行する。手動適用はコンテナ内で
 python scripts/patch_onlinejudge_atcoder_units.py を実行する。
 適用済みの箇所は維持し、想定外のソースには書き込まず失敗する。
-上流で両方の解析箇所が対応したら、このパッチと Dockerfile の適用処理を削除する。
+依存ライブラリが両方の解析箇所に対応したら、このパッチと Dockerfile の適用処理を削除する。
 """
 
 from pathlib import Path
