@@ -117,14 +117,17 @@ make help
 
 | ツール             | バージョン・用途                    |
 | ------------------ | ----------------------------------- |
-| Java               | Eclipse Temurin OpenJDK 24.0.2      |
+| Java（競技用）     | Eclipse Temurin OpenJDK 24.0.2      |
+| Java（開発ツール用） | Eclipse Temurin OpenJDK 25         |
 | Python             | 3.12（online-judge-tools、aclogin） |
 | Node.js            | 18.x（atcoder-cli）                 |
 | atcoder-cli        | 問題のダウンロード・提出            |
 | online-judge-tools | サンプルテストの実行                |
 | GNU Make           | テスト・提出コマンドの統一          |
 
-Java のバージョンは AtCoder のジャッジ環境である Java24（OpenJDK 24.0.2）に合わせている。[AtCoder 公式の言語・ライブラリ一覧](https://img.atcoder.jp/file/language-update/2025-10/language-list.html)
+`make test` は `ATCODER_JAVA` で指定した Java 24 を使う。通常の `java` と `JAVA_HOME` は、JDTLS などの開発ツールを起動できる Java 25 を指す。
+
+競技用 Java のバージョンは AtCoder のジャッジ環境である Java24（OpenJDK 24.0.2）に合わせている。[AtCoder 公式の言語・ライブラリ一覧](https://img.atcoder.jp/file/language-update/2025-10/language-list.html)
 
 ## プロジェクト構成
 
