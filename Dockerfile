@@ -1,4 +1,9 @@
-FROM eclipse-temurin:24.0.2_12-jdk-noble
+FROM eclipse-temurin:24.0.2_12-jdk-noble AS atcoder-jdk
+
+FROM eclipse-temurin:25-jdk-noble
+
+COPY --from=atcoder-jdk /opt/java/openjdk /opt/java/atcoder
+ENV ATCODER_JAVA=/opt/java/atcoder/bin/java
 
 # 環境変数設定
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     lsb-release \
     tzdata \
+    time \
     && rm -rf /var/lib/apt/lists/*
 
 

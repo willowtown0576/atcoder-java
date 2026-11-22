@@ -1,4 +1,5 @@
 ATCODER_JAVA_LANGUAGE_ID := 6056
+ATCODER_JAVA ?= java
 TEMPLATE_DIR := /root/.config/atcoder-cli-nodejs/java
 ARGUMENTS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 TARGET_DIR := $(firstword $(ARGUMENTS))
@@ -19,7 +20,7 @@ validate:
 	@test -d "$(TARGET_DIR)" || (echo "Error: Directory '$(TARGET_DIR)' does not exist."; exit 1)
 
 test: validate
-	cd "$(TARGET_DIR)" && oj t -c "java Main.java" -d ./test/
+	cd "$(TARGET_DIR)" && oj t -c "$(ATCODER_JAVA) Main.java" -d ./test/
 
 submit: validate
 	cd "$(TARGET_DIR)" && acc submit Main.java -- -l "$(ATCODER_JAVA_LANGUAGE_ID)" --yes
