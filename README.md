@@ -129,6 +129,22 @@ make help
 
 競技用 Java のバージョンは AtCoder のジャッジ環境である Java24（OpenJDK 24.0.2）に合わせている。[AtCoder 公式の言語・ライブラリ一覧](https://img.atcoder.jp/file/language-update/2025-10/language-list.html)
 
+### AtCoder のメモリ単位への互換パッチ
+
+`online-judge-api-client 10.10.1` はメモリ制限の `KB` / `MB` 表記に対応している。現在の AtCoder の `KiB` / `MiB` 表記では、問題情報を取得する際に `AssertionError` になるため、Docker ビルド時に `scripts/patch_onlinejudge_atcoder_units.py` を適用する。既存の `make test` は保存済みのサンプルを使うため、この問題があっても成功する。
+
+スクリプトは、インストール済みライブラリの `atcoder.py` にある問題一覧・問題詳細のメモリ制限解析を修正する。`KB` / `MB` の1000進換算を維持し、`KiB` / `MiB` の1024進換算を追加する。再実行が可能で、想定外のソース構造の場合は書き込み前に失敗する。
+
+既存のコンテナへ手動で適用する場合は、コンテナ内で次を実行する。
+
+```sh
+python scripts/patch_onlinejudge_atcoder_units.py
+```
+
+回帰テストはコンテナ内で `python -m unittest discover -s scripts -v` を実行する。各単位の換算、再適用、部分適用済み・未対応ソースの扱いを検証する。
+
+依存更新時には、問題一覧・問題詳細の両方で `KiB` / `MiB` を正しく解析できるか確認する。上流で対応済みになったら、このスクリプトと Dockerfile の適用処理を削除する。[上流の AtCoder 解析処理](https://github.com/online-judge-tools/api-client/blob/master/onlinejudge/service/atcoder.py)
+
 ## プロジェクト構成
 
 ```text

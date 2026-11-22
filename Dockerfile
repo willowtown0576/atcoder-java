@@ -44,7 +44,10 @@ RUN npm install -g atcoder-cli
 
 # online-judge-toolsとacloginのインストール
 # online-judge-tools が使う distutils を setuptools で補う
-RUN python -m pip install setuptools online-judge-tools aclogin
+COPY scripts/patch_onlinejudge_atcoder_units.py /tmp/patch_onlinejudge_atcoder_units.py
+RUN python -m pip install setuptools online-judge-tools aclogin \
+    && python /tmp/patch_onlinejudge_atcoder_units.py \
+    && rm /tmp/patch_onlinejudge_atcoder_units.py
 
 # 必要なディレクトリを作成
 RUN mkdir -p /root/.config/atcoder-cli-nodejs
