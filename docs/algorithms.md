@@ -11,6 +11,7 @@
 - [基本的な処理](#基本的な処理)
     - [各桁の数字の和](#各桁の数字の和)
     - [10進数の桁数](#10進数の桁数)
+    - [各桁の配列を整数に変換する](#各桁の配列を整数に変換する)
     - [回文判定](#回文判定)
     - [英小文字の出現回数](#英小文字の出現回数)
     - [プリミティブ配列を降順にする](#プリミティブ配列を降順にする)
@@ -44,6 +45,7 @@
 - [DAG](#dag)
     - [トポロジカルソート](#トポロジカルソート)
 - [探索と境界](#探索と境界)
+    - [繰り返す存在確認の手法を選ぶ](#繰り返す存在確認の手法を選ぶ)
     - [二分探索](#二分探索)
     - [答えで二分探索](#答えで二分探索)
 - [区間処理](#区間処理)
@@ -71,7 +73,7 @@
     - [部分木サイズ](#部分木サイズ)
     - [木の直径](#木の直径)
 - [よくある失敗](#よくある失敗)
-- [`template/Main.java` アルゴリズム索引](#templatemainjava-アルゴリズム索引)
+- [スニペット索引](#スニペット索引)
 - [発展的なアルゴリズム](#発展的なアルゴリズム)
 
 ## アルゴリズムを選ぶ前に
@@ -149,6 +151,45 @@ int digitCount = Long.toString(Math.abs(value)).length();
 int digitCount = Long.toString(value).replace("-", "").length();
 ```
 
+## 各桁の配列を整数に変換する
+
+各要素が `0` 以上 `9` 以下で、上位桁から並んでいる `int[]` を `long` へ変換する。
+
+```java
+int[] digits = {1, 2, 3, 4, 5};
+
+long value = 0;
+for (int digit : digits) {
+    value = value * 10 + digit;
+}
+
+// value == 12345
+```
+
+現在の値を10倍して次の数字を加えることで、末尾へ1桁ずつ追加する。
+
+```text
+0 → 1 → 12 → 123 → 1234 → 12345
+```
+
+先頭に `0` がある場合、その情報は整数への変換時に失われる。
+
+```java
+int[] digits = {0, 0, 1, 2, 3};
+// 変換結果は123
+```
+
+結果が `long` の範囲を超える可能性がある場合は、文字列や `BigInteger` を使う。オーバーフローを例外として検出するなら、次のように書ける。
+
+```java
+long value = 0;
+for (int digit : digits) {
+    value = Math.addExact(Math.multiplyExact(value, 10), digit);
+}
+```
+
+この処理は各要素が `0` 以上 `9` 以下であることを前提とする。空配列の変換結果は `0` となる。
+
 ## 回文判定
 
 ```java
@@ -172,28 +213,11 @@ static boolean isPalindrome(String text) {
 
 ## 英小文字の出現回数
 
-```java
-int[] frequencies = new int[26];
-for (char character : text.toCharArray()) {
-    frequencies[character - 'a']++;
-}
-```
-
-英小文字以外を含む場合は、`Map<Character, Integer>` や `Map.merge` を検討する。
+Java の書き方は[早見表の「英小文字の出現回数」](java-cheatsheet.md#英小文字の出現回数)を参照する。
 
 ## プリミティブ配列を降順にする
 
-`Arrays.sort` はプリミティブ配列に `Comparator` を指定できないため、昇順ソート後に反転する。
-
-```java
-Arrays.sort(values);
-
-for (int left = 0, right = values.length - 1; left < right; left++, right--) {
-    int temporary = values[left];
-    values[left] = values[right];
-    values[right] = temporary;
-}
-```
+Java の書き方は[早見表の「プリミティブ配列を降順にする」](java-cheatsheet.md#プリミティブ配列を降順にする)を参照する。
 
 # 再帰
 
@@ -499,10 +523,10 @@ $`n`$ が合成数なら、$`n = ab`$ と表せる。もし $`a`$ と $`b`$ が�
 
 ### 実装
 
-`template/Main.java` の `isPrime(long)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.isPrime(long)` を使う。
 
 ```java
-boolean prime = isPrime(value);
+boolean prime = MathUtils.isPrime(value);
 ```
 
 実装では `divisor * divisor <= n` とすると積がオーバーフローする可能性があるため、`divisor <= n / divisor` の形で比較している。
@@ -537,10 +561,10 @@ $`p`$ の倍数を $`2p`$ から消す必要はない。$`2p, 3p, \ldots, (p - 1
 
 ### 実装
 
-`template/Main.java` の `sieve(int)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.sieve(int)` を使う。
 
 ```java
-boolean[] prime = sieve(limit);
+boolean[] prime = MathUtils.sieve(limit);
 
 if (prime[value]) {
     // valueは素数
@@ -584,10 +608,10 @@ $`a = qb + r`$ とすると、$`a`$ と $`b`$ の共通約数は $`r = a - qb`$ 
 
 ### 実装
 
-`template/Main.java` の `gcd(long, long)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.gcd(long, long)` を使う。
 
 ```java
-long divisor = gcd(first, second);
+long divisor = MathUtils.gcd(first, second);
 ```
 
 ### 計算量
@@ -605,7 +629,7 @@ $$
 ```java
 long result = 0;
 for (long value : values) {
-    result = gcd(result, value);
+    result = MathUtils.gcd(result, value);
 }
 ```
 
@@ -634,10 +658,10 @@ $$
 
 ### 実装
 
-`template/Main.java` の `lcm(long, long)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.lcm(long, long)` を使う。
 
 ```java
-long multiple = lcm(first, second);
+long multiple = MathUtils.lcm(first, second);
 ```
 
 ### 計算量
@@ -668,10 +692,10 @@ $$
 
 ### 実装
 
-`template/Main.java` の `divisors(long)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.divisors(long)` を使う。
 
 ```java
-List<Long> values = divisors(n);
+List<Long> values = MathUtils.divisors(n);
 ```
 
 戻り値は昇順である。
@@ -815,10 +839,10 @@ $$
 a^{-1} \equiv a^{\mathrm{mod} - 2} \pmod {\mathrm{mod}}
 $$
 
-`template/Main.java` の `modPow` を使う場合:
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.modPow` を使う場合:
 
 ```java
-long inverse = modPow(a, mod - 2, mod);
+long inverse = MathUtils.modPow(a, mod - 2, mod);
 long quotient = numerator % mod * inverse % mod;
 ```
 
@@ -867,10 +891,10 @@ $$
 
 ### 実装
 
-`template/Main.java` の `modPow(long, long, long)` を使う。
+[MathUtils.java](../snippets/MathUtils.java) の `MathUtils.modPow(long, long, long)` を使う。
 
 ```java
-long result = modPow(base, exponent, mod);
+long result = MathUtils.modPow(base, exponent, mod);
 ```
 
 ### ループ不変条件
@@ -912,14 +936,14 @@ $$
 \end{aligned}
 $$
 
-`template/Main.java` には次がある。
+[MathUtils.java](../snippets/MathUtils.java) には次がある。
 
 - `floorDiv(dividend, divisor)`: 数学的な切り下げ
 - `ceilDiv(dividend, divisor)`: 数学的な切り上げ
 
 ```java
-long groups = ceilDiv(itemCount, groupSize);
-long bucket = floorDiv(value, width);
+long groups = MathUtils.ceilDiv(itemCount, groupSize);
+long bucket = MathUtils.floorDiv(value, width);
 ```
 
 符号が混在する場合も扱えるため、正数限定の `(a + b - 1) / b` より一般的である。
@@ -1059,10 +1083,10 @@ static int[][] bfsGrid(char[][] grid, int startRow, int startColumn) {
         int column = current[1];
 
         for (int direction = 0; direction < 4; direction++) {
-            int nextRow = row + DR[direction];
-            int nextColumn = column + DC[direction];
+            int nextRow = row + Grid.DR[direction];
+            int nextColumn = column + Grid.DC[direction];
 
-            if (!isInside(nextRow, nextColumn, height, width)) {
+            if (!Grid.isInside(nextRow, nextColumn, height, width)) {
                 continue;
             }
             if (grid[nextRow][nextColumn] == '#') {
@@ -1081,7 +1105,7 @@ static int[][] bfsGrid(char[][] grid, int startRow, int startColumn) {
 }
 ```
 
-`DR`、`DC`、`isInside` は `template/Main.java` に定義されている。
+`Grid.DR`、`Grid.DC`、`Grid.isInside` は [Grid.java](../snippets/Grid.java) に定義されている。
 
 ## 深さ優先探索（DFS）
 
@@ -1463,9 +1487,24 @@ boolean directedAcyclicGraph = order.size() == vertexCount;
 
 # 探索と境界
 
+## 繰り返す存在確認の手法を選ぶ
+
+単発の存在確認では配列を走査する。何度も確認する場合は、値域と検索回数から前処理を選ぶ。
+
+| 手法 | 採用条件 | 構築 | 1回の検索 | 追加メモリ |
+| ---- | -------- | ---- | --------- | ---------- |
+| 配列の走査 | 検索回数が少ない | 不要 | O(N) | O(1) |
+| 存在を表す boolean 配列 | 値が狭い整数範囲に収まる | O(N + V) | O(1) | O(V) |
+| HashSet | 値域が広い・負数を含む | 平均 O(N) | 平均 O(1) | O(N) |
+| ソートと二分探索 | 昇順のデータも利用する | O(N log N) | O(log N) | ソート方法による |
+
+`N` は要素数、`V` は確保する値域の大きさ。boolean 配列では範囲外の値を添字にしないようにする。元の順序が必要なら、ソート前に配列をコピーする。
+
+Java の操作例は[早見表の存在確認](java-cheatsheet.md#同じ値集合に繰り返し存在確認する)、境界の実装は[二分探索](#二分探索)を参照する。
+
 ## 二分探索
 
-`template/Main.java` に次のメソッドが定義されている。
+[BinarySearch.java](../snippets/BinarySearch.java) に次のメソッドが定義されている。
 
 - `lowerBound`: `target` 以上となる最初の位置
 - `upperBound`: `target` より大きくなる最初の位置
@@ -1485,8 +1524,8 @@ boolean directedAcyclicGraph = order.size() == vertexCount;
 ソート済み配列で使うこと。
 
 ```java
-int firstAtLeastTarget = lowerBound(values, target);
-int firstGreaterThanTarget = upperBound(values, target);
+int firstAtLeastTarget = BinarySearch.lowerBound(values, target);
+int firstGreaterThanTarget = BinarySearch.upperBound(values, target);
 int targetCount = firstGreaterThanTarget - firstAtLeastTarget;
 ```
 
@@ -1530,10 +1569,10 @@ long answer = ok;
 
 ## 累積和
 
-`template/Main.java` の `prefixSums` は、先頭に `0` を持つ長さ `N + 1` の配列を返す。
+[PrefixSums.java](../snippets/PrefixSums.java) の `PrefixSums.prefixSums` は、先頭に `0` を持つ長さ `N + 1` の配列を返す。
 
 ```java
-long[] sums = prefixSums(values);
+long[] sums = PrefixSums.prefixSums(values);
 long rangeSum = sums[right] - sums[left]; // [left, right)
 ```
 
@@ -1725,7 +1764,7 @@ int[] sortedValues = Arrays.stream(values)
 
 int[] compressed = new int[values.length];
 for (int index = 0; index < values.length; index++) {
-    compressed[index] = lowerBound(sortedValues, values[index]);
+    compressed[index] = BinarySearch.lowerBound(sortedValues, values[index]);
 }
 ```
 
@@ -1934,10 +1973,10 @@ for (long subset = mask; subset > 0; subset = (subset - 1) & mask) {
 
 ### 実装
 
-Java 標準 API に next permutation はない。`template/Main.java` の `permutations(int[])` または `permutations(char[])` を使う。
+Java 標準 API に next permutation はない。[Permutations.java](../snippets/Permutations.java) の `Permutations.permutations(int[])` または `Permutations.permutations(char[])` を使う。
 
 ```java
-List<int[]> results = permutations(new int[] {1, 2, 3});
+List<int[]> results = Permutations.permutations(new int[] {1, 2, 3});
 for (int[] permutation : results) {
     // permutationを評価する
 }
@@ -1946,17 +1985,17 @@ for (int[] permutation : results) {
 文字配列の場合:
 
 ```java
-List<char[]> results = permutations(new char[] {'a', 'b', 'c'});
+List<char[]> results = Permutations.permutations(new char[] {'a', 'b', 'c'});
 for (char[] permutation : results) {
     String text = new String(permutation);
     // textを評価する
 }
 ```
 
-テンプレート関数は入力配列を変更せず、相異なる順列を辞書順で返す。重複要素を含む場合、同じ値の並びは一度だけ生成する。
+`Permutations` のメソッドは入力配列を変更せず、相異なる順列を辞書順で返す。重複要素を含む場合、同じ値の並びは一度だけ生成する。
 
 ```java
-permutations(new int[] {1, 1, 2});
+Permutations.permutations(new int[] {1, 1, 2});
 // [1, 1, 2], [1, 2, 1], [2, 1, 1]
 ```
 
@@ -1978,7 +2017,7 @@ $`N`$ 個の要素から、並び順を区別せずに $`K`$ 個を選ぶすべ�
 
 ### 実装
 
-`template/Main.java` の `combinations(int, int)` を使う。選ぶインデックスを常に昇順にすると、同じ組み合わせを重複して生成しない。
+[Combinations.java](../snippets/Combinations.java) の `Combinations.combinations(int, int)` を使う。選ぶインデックスを常に昇順にすると、同じ組み合わせを重複して生成しない。
 
 ```java
 static List<int[]> combinations(int n, int k) {
@@ -2015,7 +2054,7 @@ static void enumerateCombinations(
 
 ```java
 int[] values = {10, 20, 30, 40};
-for (int[] indices : combinations(values.length, 2)) {
+for (int[] indices : Combinations.combinations(values.length, 2)) {
     int first = values[indices[0]];
     int second = values[indices[1]];
     // (10, 20), (10, 30), (10, 40), (20, 30), (20, 40), (30, 40)
@@ -2024,10 +2063,10 @@ for (int[] indices : combinations(values.length, 2)) {
 
 この実装は選んだ要素のインデックスを返す。同じ値が異なるインデックスにある場合、それぞれを別の要素として扱う。
 
-`char[]` から文字を直接選ぶ場合は、テンプレートの `combinations(char[], int)` を使う。入力配列は変更せず、値として同一の組み合わせを除外して辞書順で返す。
+`char[]` から文字を直接選ぶ場合は、[Combinations.java](../snippets/Combinations.java) の `Combinations.combinations(char[], int)` を使う。入力配列は変更せず、値として同一の組み合わせを除外して辞書順で返す。
 
 ```java
-List<char[]> results = combinations(new char[] {'a', 'a', 'b', 'c'}, 2);
+List<char[]> results = Combinations.combinations(new char[] {'a', 'a', 'b', 'c'}, 2);
 for (char[] combination : results) {
     out.println(new String(combination));
 }
@@ -2211,29 +2250,29 @@ Java の配列処理では `[left, right)` に統一すると扱いやすい。
 
 Java では深い DFS が `StackOverflowError` になりやすい。入力が直線状の木になる可能性も考え、必要なら `Deque` を使った反復処理へ変更する。
 
-# `template/Main.java` アルゴリズム索引
+# スニペット索引
 
-`template/Main.java` から利用できるアルゴリズムの用途と計算量を示す。
+必要なクラスを提出する `Main.java` の末尾へコピーし、スニペットの `import` をファイル先頭へ追加する。メソッドは `MathUtils.gcd(a, b)` のようにクラス名を付けて呼び出す。クラス間の依存はなく、それぞれ単独で使用できる。
 
-| テンプレート要素 | 解決する問題                   | 計算量               |
-| ---------------- | ------------------------------ | -------------------- |
-| `DR` / `DC`      | グリッド上の上下左右移動       | 1方向あたり O(1)     |
-| `isInside`       | 座標がグリッド内か判定         | O(1)                 |
-| `ceilDiv`        | 符号を含む数学的な切り上げ除算 | O(1)                 |
-| `floorDiv`       | 符号を含む数学的な切り下げ除算 | O(1)                 |
-| `isPrime`        | 1つの整数の素数判定            | O(√N)                |
-| `sieve`          | N 以下の素数を一括判定         | O(N log log N)       |
-| `gcd`            | 最大公約数                     | O(log min(A, B))     |
-| `lcm`            | 最小公倍数                     | O(log min(A, B))     |
-| `modPow`         | べき乗剰余                     | O(log exponent)      |
-| `lowerBound`     | `target` 以上の最初の位置      | O(log N)             |
-| `upperBound`     | `target` より大きい最初の位置  | O(log N)             |
-| `prefixSums`     | 静的な区間和の前計算           | 構築 O(N)、取得 O(1) |
-| `divisors`       | 正の約数列挙                   | O(√N + D log D)      |
-| `permutations`   | 配列の相異なる順列を全列挙     | O(N log N + NP)      |
-| `combinations`   | N 個から K 個を選ぶ組合せ列挙  | O(K × C(N, K))       |
+| ファイル | API | 用途・計算量 |
+| -------- | --- | ------------ |
+| [MathUtils.java](../snippets/MathUtils.java) | `ceilDiv` / `floorDiv` | 符号を含む整数除算、O(1) |
+| [MathUtils.java](../snippets/MathUtils.java) | `isPrime` | 素数判定、O(√N) |
+| [MathUtils.java](../snippets/MathUtils.java) | `sieve` | N 以下の素数を一括判定、O(N log log N) |
+| [MathUtils.java](../snippets/MathUtils.java) | `gcd` / `lcm` | 最大公約数・最小公倍数、O(log max(abs(A), abs(B))) |
+| [MathUtils.java](../snippets/MathUtils.java) | `modPow` | べき乗剰余、O(log exponent) |
+| [MathUtils.java](../snippets/MathUtils.java) | `divisors` | 正の約数を昇順に列挙、O(√N + D) |
+| [BinarySearch.java](../snippets/BinarySearch.java) | `lowerBound` / `upperBound` | 昇順配列の境界探索、O(log N) |
+| [PrefixSums.java](../snippets/PrefixSums.java) | `prefixSums` | 静的な区間和、構築 O(N)・取得 O(1) |
+| [Grid.java](../snippets/Grid.java) | `DR` / `DC` / `isInside` | 上下左右への移動・範囲判定、1方向あたり O(1) |
+| [Permutations.java](../snippets/Permutations.java) | `permutations` | 相異なる順列をすべて保存、O(N log N + NP) |
+| [Permutations.java](../snippets/Permutations.java) | `nextPermutation` | 次の順列へ配列を更新、O(N) |
+| [Combinations.java](../snippets/Combinations.java) | `combinations` | インデックスまたは文字の組み合わせを列挙 |
+| [UnionFind.java](../snippets/UnionFind.java) | `merge` / `same` / `leader` | 集合の統合・連結判定、償却 O(α(N)) |
 
-入力、出力、配列表示など、Java API とテンプレートの使用例は [`java-cheatsheet.md`](java-cheatsheet.md) から確認できる。
+`D` は約数の個数、`P` は相異なる順列の個数。インデックスの組み合わせ列挙は、組み合わせ数を C として O(KC) の時間・結果の保存領域を使う。文字の組み合わせは同じ文字の重複を除き、選択数に比例する深さで再帰する。
+
+標準入力・標準出力は `template/Main.java` に用意している。配列の入出力や Java API の使用例は [java-cheatsheet.md](java-cheatsheet.md) を参照する。
 
 # 発展的なアルゴリズム
 

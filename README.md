@@ -157,6 +157,7 @@ atcoder-java/
 ├── docs/
 │   ├── algorithms.md      # 頻出アルゴリズムと実装例
 │   └── java-cheatsheet.md # Java標準API・データ型の早見表
+├── snippets/              # 必要なときにコピーするアルゴリズム
 ├── template/
 │   ├── Main.java          # Javaテンプレート本体
 │   └── template.json      # atcoder-cliテンプレート設定
@@ -170,10 +171,10 @@ atcoder-java/
 
 Java テンプレートはプロジェクト内の `template/` で管理する。
 
-- `template/Main.java`: `acc new` で生成する Java コード
+- `template/Main.java`: 標準入出力を備えた、`acc new` で生成する Java コード
 - `template/template.json`: atcoder-cli のテンプレート設定
 
-スニペット、入力補助クラス、定数、ユーティリティメソッドなどを追加する場合は、`template/Main.java` を直接編集する。編集後、次のコマンドで atcoder-cli の設定ディレクトリへ反映する。
+`Main.java` には、数値・文字列・配列・文字グリッドの入力、固定小数点・空白区切りの配列やリスト・Yes/No の出力を用意している。標準入出力の補助機能を追加する場合は `template/Main.java` を編集し、次のコマンドで atcoder-cli の設定ディレクトリへ反映する。
 
 ```bash
 make template-sync
@@ -188,6 +189,21 @@ Dev Container の新規作成時にも `postCreateCommand` から自動同期さ
 3. `acc new <コンテストID>` で問題を作成する。
 
 テンプレート更新だけで Dev Container を再ビルドする必要はない。
+
+### アルゴリズムのスニペット
+
+アルゴリズムは `snippets/` の用途別クラスを使う。必要なクラスを問題の `Main.java` の末尾へコピーし、スニペットの `import` 文をファイル先頭へ追加する。提出する `Main.java` にクラスを含めることで、単一ファイルでコンパイルできる。
+
+例えば、`BinarySearch` をコピーした場合は、`solve()` 内で次のように使える。
+
+```java
+int n = fs.nextInt();
+int target = fs.nextInt();
+int[] values = fs.nextIntArray(n); // 入力は昇順ソート済み
+out.println(BinarySearch.lowerBound(values, target));
+```
+
+利用できるクラスと計算量は [スニペット索引](docs/algorithms.md#スニペット索引)を参照する。
 
 ## Java 早見表
 
